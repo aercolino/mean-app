@@ -108,7 +108,7 @@ function CRUD_Controller(Item, fields) {
                 }
 
                 res.json({
-                    message: 'Item created!'
+                    message: Item.modelName + ' created!',
                 });
 
             });
@@ -157,7 +157,7 @@ function CRUD_Controller(Item, fields) {
                         return res.send(err);
                     }
                     res.json({
-                        message: 'Item updated!'
+                        message: Item.modelName + ' updated!'
                     });
                 });
 
@@ -180,7 +180,7 @@ function CRUD_Controller(Item, fields) {
             }
 
             res.json({
-                message: 'Item deleted!'
+                message: Item.modelName + ' deleted!'
             });
 
         });
