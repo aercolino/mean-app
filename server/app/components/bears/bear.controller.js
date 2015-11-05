@@ -1,3 +1,5 @@
+'use strict';
+
 var Item = require('./bear.model');
 var fields = ['name'];
 

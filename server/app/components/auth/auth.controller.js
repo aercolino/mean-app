@@ -1,16 +1,17 @@
+'use strict';
 
 module.exports = AuthController();
 
 function AuthController() {
-    var extend = require('util')._extend;
+    var Extend = require('util')._extend;
     var jsonWT = require('jsonwebtoken');
     var User   = require(global.absPath + '/app/components/users/user.model');
     var Hash   = require(global.absPath + '/app/components/auth/hash');
     var config = require(global.absPath + '/app/config');
 
     var self = {
-        authenticateCredentials: Authenticate,
-        verifyToken: Verify
+        VerifyCredentials: VerifyCredentials,
+        VerifyToken: VerifyToken
     };
 
     return self;
@@ -34,7 +35,7 @@ function AuthController() {
 
 
 
-    function Authenticate(req, res) {
+    function VerifyCredentials(req, res) {
         User.findOne({
             name: req.body.name
         }, function(error, user) {
@@ -46,13 +47,13 @@ function AuthController() {
             if (!user) {
                 return res.json({
                     success: false,
-                    message: 'Authentication failed. User not found.'
+                    message: 'Authentication failed. Wrong name.'
                 });
             }
 
 //            return SendToken(res, user);  // TODO: comment out this line ASAP
 
-            var options = extend({}, user.password);
+            var options = Extend({}, user.password);
             delete options.key;
             options.plaintext = req.body.password;
             Hash(options, function (error, result) {
@@ -77,7 +78,7 @@ function AuthController() {
 
 
 
-    function Verify(req, res, next) {
+    function VerifyToken(req, res, next) {
         var token = req.body.token || req.query.token || req.params.token || req.headers['x-access-token'];
         if (!token) {
             return res.status(403).send({
@@ -89,11 +90,11 @@ function AuthController() {
             if (err) {
                 return res.json({
                     success: false,
-                    message: 'Failed to authenticate token.'
+                    message: 'Authentication failed. Wrong token.'
                 });
             }
-            req.user = simplified;
-            console.log("Access granted to user '%s'.", req.user.name);
+            req.current_user = simplified;
+            console.log("Access granted to user '%s'.", req.current_user.name);
             if (typeof next == 'function') {
                 next();
             }

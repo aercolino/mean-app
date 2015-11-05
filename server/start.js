@@ -1,3 +1,4 @@
+'use strict';
 
 // BASE SETUP
 // =============================================================================
@@ -5,18 +6,18 @@
 global.absPath = __dirname;
 var port = process.env.PORT || 8080;
 
-var express = require('express');
-var app     = express();
+var Express = require('express');
+var app     = Express();
 
 var bodyParser = require('body-parser');
-var morgan     = require('morgan');
+var Morgan     = require('morgan');
 var mongoose   = require('mongoose');
 
 var config = require('./app/config');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+app.use(Morgan('dev'));
 mongoose.connect(config.database);
 
 app.get('/', function(req, res) {

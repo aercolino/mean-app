@@ -1,8 +1,7 @@
-    
 'use strict';
 
 module.exports = {
-    isPromise: IsPromise
+    IsPromise: IsPromise
 };
 
 return;

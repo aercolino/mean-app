@@ -1,3 +1,5 @@
+'use strict';
+
 // See http://www.boronine.com/2012/08/30/Strong-Password-Hashing-with-Node-Standard-Library/
 
 var crypto = require('crypto');
@@ -5,6 +7,8 @@ var crypto = require('crypto');
 module.exports = Hash;
 
 return;
+
+
 
 function Hash(options, callback) {
 

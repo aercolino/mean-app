@@ -1,17 +1,17 @@
+'use strict';
 
 module.exports = Routes();
 
 function Routes() {
-    var express = require('express');
-    var router = express.Router();
+    var Express = require('express');
+    var router = Express.Router();
     var controller = require('./auth.controller')
 
     router.route('/login')
-        .post(controller.authenticateCredentials);
+        .post(controller.VerifyCredentials);
 
     router.route('/verify/:token')
-        .get(controller.verifyToken);
+        .get(controller.VerifyToken);
 
     return router;
 }
-

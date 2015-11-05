@@ -1,21 +1,22 @@
+'use strict';
+
 module.exports = CRUD_Routes;
 
 function CRUD_Routes(controller) {
-    var express = require('express');
-    var router = express.Router();
+    var Express = require('express');
+    var router = Express.Router();
 
     var auth = require(global.absPath + '/app/components/auth/auth.controller');
-    // All routes after this "use" are restricted.
-    router.use(auth.verifyToken);
+    router.use(auth.VerifyToken);  // All routes after this line are authenticated.
 
     router.route('/')
-        .get(controller.list)
-        .post(controller.create);
+        .get(controller.List)
+        .post(controller.Create);
 
     router.route('/:item_id')
-        .get(controller.read)
-        .put(controller.update)
-        .delete(controller.delete);
+        .get(controller.Read)
+        .put(controller.Update)
+        .delete(controller.Delete);
 
     return router;
 }

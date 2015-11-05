@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = CRUD_Controller;
 
 function CRUD_Controller(Item, fields) {
@@ -6,11 +8,11 @@ function CRUD_Controller(Item, fields) {
     var stuff = require('./stuff');
 
     var self = {
-        list: List,
-        create: Create,
-        read: Read,
-        update: Update,
-        delete: Delete
+        List:   List,
+        Create: Create,
+        Read:   Read,
+        Update: Update,
+        Delete: Delete
     };
 
     return self;
@@ -49,7 +51,7 @@ function CRUD_Controller(Item, fields) {
                         name: matches[1],
                         value: field(data[matches[1]])
                     };
-                    if (stuff.isPromise(result.value)) {
+                    if (stuff.IsPromise(result.value)) {
                         var promise = new Promise(function (resolve, reject) {
                             var name = result.name;
                             result.value.then(function (value) {
