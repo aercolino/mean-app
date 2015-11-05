@@ -109,6 +109,7 @@ function CRUD_Controller(Item, fields) {
 
                 res.json({
                     message: Item.modelName + ' created!',
+                    item_id: item._id
                 });
 
             });
