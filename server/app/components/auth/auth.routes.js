@@ -10,8 +10,9 @@ function Routes() {
     router.route('/login')
         .post(controller.VerifyCredentials);
 
-    router.route('/verify/:token')
-        .get(controller.VerifyToken);
+    router.route(/^\/verify(?:\/(.+)?)?/i)
+        .get(controller.VerifyToken)
+        .post(controller.VerifyToken);
 
     return router;
 }
