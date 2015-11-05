@@ -39,4 +39,4 @@ app.use('/api/users', require('./app/components/users/user.routes'));
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('Magic happens on port ' + port + ' since ' + (new Date));
