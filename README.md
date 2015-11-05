@@ -13,11 +13,11 @@ See also: http://andowebsit.es/blog/noteslog.com/post/how-to-improve-filters-wit
 ## Server API
 
 ### Login
-Returns a JSON Web Token for the verified credentials.
+Returns a [JSON Web Token](https://github.com/auth0/node-jsonwebtoken) for verified credentials.
 
     POST localhost:8080/auth/login {
-        name: ..., 
-        password: ...
+        name: "<NAME>", 
+        password: "<PASSWORD>"
     }
 
 Success:
@@ -25,7 +25,7 @@ Success:
     {
       "success": true,
       "message": "Enjoy your token!",
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjMxZWFiMTE1NGY5ZDA3MmYwMDAwMDEiLCJuYW1lIjoiQW5kcmVhIiwiaWF0IjoxNDQ2NzIzMDcxLCJleHAiOjE0NDY3NTkwNzF9.2cbAYrzzAowPLEYiW-n6l_zY8kHwcEL0Fw3RSWlBxSA"
+      "token": "<TOKEN>"
     }
 
 Failures:
@@ -39,3 +39,32 @@ Failures:
       "success": false,
       "message": "Authentication failed. Wrong password."
     }
+
+### Token Verification
+Returns a response.success == true for a verified token.
+
+    GET, POST localhost:8080/auth/verify?token=<TOKEN>
+    GET, POST localhost:8080/auth/verify/<TOKEN>
+    POST localhost:8080/auth/verify {
+        token: <TOKEN>
+    }
+
+Success:
+
+    {
+      "success": true,
+      "message": "Enjoy your access!"
+    }
+
+Failures:
+
+    {
+        "success": false,
+        "message": "No token provided."
+    }
+
+    {
+        "success": false,
+        "message": "Authentication failed. Wrong token."
+    }
+
