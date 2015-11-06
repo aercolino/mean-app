@@ -5,8 +5,8 @@ module.exports = AuthController();
 function AuthController() {
     var Extend = require('util')._extend;
     var jsonWT = require('jsonwebtoken');
-    var User   = require(global.absPath + '/app/components/users/user.model');
-    var Hash   = require(global.absPath + '/app/components/auth/hash');
+    var User = require(global.absPath + '/app/components/users/user.model');
+    var Hash = require(global.absPath + '/app/components/auth/hash');
     var config = require(global.absPath + '/app/config');
 
     var self = {
@@ -15,23 +15,6 @@ function AuthController() {
     };
 
     return self;
-
-
-
-    function SendToken(res, user) {
-        var simplified = {
-            _id:  user._id,
-            name: user.name
-        };
-        var token = jsonWT.sign(simplified, config.secret, {
-            expiresIn: "10h"
-        });
-        res.json({
-            success: true,
-            message: 'Enjoy your token!',
-            token: token
-        });
-    } 
 
 
 
@@ -51,12 +34,10 @@ function AuthController() {
                 });
             }
 
-//            return SendToken(res, user);  // TODO: comment out this line ASAP
-
             var options = Extend({}, user.password);
             delete options.key;
             options.plaintext = req.body.password;
-            Hash(options, function (error, result) {
+            Hash(options, function(error, result) {
 
                 if (error) {
                     throw error;
@@ -69,7 +50,18 @@ function AuthController() {
                     });
                 }
 
-                SendToken(res, user);
+                var simplified = {
+                    _id: user._id,
+                    name: user.name
+                };
+                var token = jsonWT.sign(simplified, config.secret, {
+                    expiresIn: "10h"
+                });
+                res.json({
+                    success: true,
+                    message: 'Enjoy your token!',
+                    token: token
+                });
 
             });
 
@@ -81,14 +73,17 @@ function AuthController() {
     function VerifyToken(req, res, next) {
         var token = req.body.token || req.query.token || req.params[0] || req.headers['x-access-token'];
         var isBackgroundVerification = !!req.headers['x-access-token'];
+
         if (!token) {
             return res.status(403).send({
                 success: false,
                 message: 'No token provided.'
             });
         }
-        jsonWT.verify(token, config.secret, function(err, simplified) {
-            if (err) {
+
+        jsonWT.verify(token, config.secret, function(error, simplified) {
+
+            if (error) {
                 return res.json({
                     success: false,
                     message: 'Authentication failed. Wrong token.'

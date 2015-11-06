@@ -3,6 +3,7 @@
 // BASE SETUP
 // =============================================================================
 
+global.skipAuth = true;
 global.absPath = __dirname;
 var port = process.env.PORT || 8080;
 
