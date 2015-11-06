@@ -71,7 +71,7 @@ function AuthController() {
 
 
     function VerifyToken(req, res, next) {
-        var token = req.body.token || req.query.token || req.params[0] || req.headers['x-access-token'];
+        var token = req.headers['x-access-token'] || req.body.token || req.query.token || req.params[0];
         var isBackgroundVerification = !!req.headers['x-access-token'];
 
         if (!token) {
@@ -89,15 +89,29 @@ function AuthController() {
                     message: 'Authentication failed. Wrong token.'
                 });
             }
-            if (!isBackgroundVerification) {
-                return res.json({
-                    success: true,
-                    message: 'Enjoy your access!'
-                });
-            }
-            req.current_user = simplified;
-            console.log("Access granted to user '%s'.", req.current_user.name);
-            next();
+
+            User.findOne({
+                _id: simplified._id
+            }, function(error, user) {
+            
+                if (error) {
+                    return res.json({
+                        success: false,
+                        message: 'Authentication failed. Wrong user.'
+                    });
+                }
+
+                req.current_user = user;
+                console.log("Access granted to user '%s'.", req.current_user.name);
+                if (!isBackgroundVerification) {
+                    return res.json({
+                        success: true,
+                        message: 'Enjoy your access, ' + req.current_user.name + '!'
+                    });
+                }
+
+                next();
+            });
         });
     }
 }
