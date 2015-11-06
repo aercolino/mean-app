@@ -21,7 +21,7 @@ function AuthController() {
     function VerifyCredentials(req, res) {
         User.findOne({
             name: req.body.name
-        }, function(error, user) {
+        }).select('password').exec(function(error, user) {
 
             if (error) {
                 throw error;
