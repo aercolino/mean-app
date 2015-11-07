@@ -61,8 +61,8 @@ function VerifyCredentials(req, res) {
 
 
 function VerifyToken(req, res, next) {
-    var token = req.headers['x-access-token'] || req.params[0];
-    var httpError = stuff.httpStatusCode[req.headers['x-access-token'] ? 'Forbidden' : 'Bad Request'];
+    var token = req.params[0] || req.headers['x-access-token'];
+    var httpError = stuff.httpStatusCode[req.params[0] ? 'Bad Request' : 'Forbidden'];
 
     if (!token) {
         return res.status(httpError).json(stuff.Failure('Authentication failed. No token.'));
