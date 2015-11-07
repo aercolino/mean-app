@@ -77,7 +77,7 @@ function VerifyToken(req, res, next) {
         User.findOne({
             _id: simplified._id
         }, function(error, user) {
-        
+
             if (error) {
                 return res.status(httpError).json(stuff.Failure('Authentication failed. Wrong user.'));
             }
@@ -85,10 +85,8 @@ function VerifyToken(req, res, next) {
             req.current_user = user;
             console.log("Access granted to '%s'.", req.current_user.name);
 
-            if (!req.headers['x-access-token']) {
-
+            if (req.params[0]) {
                 return res.json(stuff.Success(req.current_user.name, 'Access granted.'));
-
             }
 
             next();
