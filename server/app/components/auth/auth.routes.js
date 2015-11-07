@@ -7,12 +7,11 @@ function Routes() {
     var router = Express.Router();
     var controller = require('./auth.controller')
 
-    router.route('/login')
+    router.route('/')
         .post(controller.VerifyCredentials);
 
-    router.route(/^\/verify(?:\/(.+)?)?/i)
-        .get(controller.VerifyToken)
-        .post(controller.VerifyToken);
+    router.route('/:token')
+        .get(controller.VerifyToken);
 
     return router;
 }

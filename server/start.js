@@ -3,7 +3,7 @@
 // BASE SETUP
 // =============================================================================
 
-global.skipAuth = true;
+global.skipAuth = !true;
 global.absPath = __dirname;
 var port = process.env.PORT || 8080;
 
@@ -29,11 +29,11 @@ app.get('/', function(req, res) {
 
 // ROUTES
 // =============================================================================
-app.use('/auth',      require('./app/components/auth/auth.routes'));
+app.use('/api/tokens', require('./app/components/auth/auth.routes'));
 
-app.use('/api/bears', require('./app/components/bears/bear.routes'));
+app.use('/api/bears',  require('./app/components/bears/bear.routes'));
 
-app.use('/api/users', require('./app/components/users/user.routes'));
+app.use('/api/users',  require('./app/components/users/user.routes'));
 
 
 
