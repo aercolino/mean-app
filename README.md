@@ -12,10 +12,11 @@ See also: http://andowebsit.es/blog/noteslog.com/post/how-to-improve-filters-wit
 
 ## Server API
 
-### Login
-Returns a [JSON Web Token](https://github.com/auth0/node-jsonwebtoken) for verified credentials.
 
-    POST localhost:8080/auth/login {
+### Authentication with credentials
+Send valid credentials to get a [JSON Web Token](https://github.com/auth0/node-jsonwebtoken).
+
+    POST localhost:8080/api/tokens {
         name: "<NAME>", 
         password: "<PASSWORD>"
     }
@@ -24,8 +25,7 @@ Success:
 
     {
       "success": true,
-      "message": "Enjoy your token!",
-      "token": "<TOKEN>"
+      "payload": "<TOKEN>"
     }
 
 Failures:
@@ -40,31 +40,28 @@ Failures:
       "message": "Authentication failed. Wrong password."
     }
 
-### Token Verification
-Returns a response.success == true for a verified token.
 
-    GET, POST localhost:8080/auth/verify?token=<TOKEN>
-    GET, POST localhost:8080/auth/verify/<TOKEN>
-    POST localhost:8080/auth/verify {
-        token: <TOKEN>
-    }
+### Authentication with token
+Send a valid token to get authenticated.
+
+    GET localhost:8080/api/tokens/<TOKEN>
 
 Success:
 
     {
       "success": true,
-      "message": "Enjoy your access!"
+      "payload": "<User name>",
+      "message": "Access granted."
     }
 
 Failures:
 
     {
         "success": false,
-        "message": "No token provided."
+        "message": "Authentication failed. Wrong token."
     }
 
     {
         "success": false,
-        "message": "Authentication failed. Wrong token."
+        "message": "Authentication failed. Wrong user."
     }
-
