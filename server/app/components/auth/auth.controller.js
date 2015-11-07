@@ -87,7 +87,7 @@ function VerifyToken(req, res, next) {
 
             if (!req.headers['x-access-token']) {
 
-                return res.json(stuff.Success(req.current_user.name), 'Access granted');
+                return res.json(stuff.Success(req.current_user.name, 'Access granted.'));
 
             }
 
