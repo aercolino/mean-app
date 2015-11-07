@@ -78,13 +78,13 @@ function CRUD_Controller(Item, fields) {
 
     function List(req, res) {
 
-        Item.find(function(err, items) {
+        Item.find(function(error, items) {
 
-            if (err) {
-                return res.send(err);
+            if (error) {
+                return res.json(stuff.Failure(error));
             }
 
-            res.json(items);
+            res.json(stuff.Success(items, items.length + ' items'));
 
         });
 
@@ -101,16 +101,13 @@ function CRUD_Controller(Item, fields) {
                 item[fField.name] = fField.value;
             });
 
-            item.save(function(err) {
+            item.save(function(error) {
 
-                if (err) {
-                    return res.send(err);
+                if (error) {
+                    return res.json(stuff.Failure(error));
                 }
 
-                res.json({
-                    message: Item.modelName + ' created!',
-                    item_id: item._id
-                });
+                res.json(stuff.Success(item._id, Item.modelName + ' created!'));
 
             });
         });
@@ -121,13 +118,13 @@ function CRUD_Controller(Item, fields) {
 
     function Read(req, res) {
 
-        Item.findById(req.params.item_id, function(err, item) {
+        Item.findById(req.params.item_id, function(error, item) {
 
-            if (err) {
-                return res.send('Expected a valid id: ' + err.message);
+            if (error) {
+                return res.json(stuff.Failure(error));
             }
 
-            res.json(item);
+            res.json(stuff.Success(item));
 
         });
 
@@ -137,14 +134,14 @@ function CRUD_Controller(Item, fields) {
 
     function Update(req, res) {
 
-        Item.findById(req.params.item_id, function(err, item) {
+        Item.findById(req.params.item_id, function(error, item) {
 
-            if (err) {
-                return res.send('Expected a valid id: ' + err.message);
+            if (error) {
+                return res.json(stuff.Failure(error));
             }
 
             if (!item) {
-                return res.send('Expected a valid id.');
+                return res.json(stuff.Failure('Expected a valid id.'));
             }
 
             FilterFields(req.body, function (fFields) {
@@ -153,13 +150,14 @@ function CRUD_Controller(Item, fields) {
                     item[fField.name] = fField.value;
                 });
 
-                item.save(function(err) {
-                    if (err) {
-                        return res.send(err);
+                item.save(function(error) {
+
+                    if (error) {
+                        return res.json(stuff.Failure(error));
                     }
-                    res.json({
-                        message: Item.modelName + ' updated!'
-                    });
+
+                    res.json(stuff.Success(null, Item.modelName + ' updated!'));
+
                 });
 
             });
@@ -174,15 +172,14 @@ function CRUD_Controller(Item, fields) {
 
         Item.remove({
             _id: req.params.item_id
-        }, function(err, item) {
+        }, function(error, numDeletions) {
 
-            if (err) {
-                return res.send('Expected a valid id: ' + err.message);
+            if (error) {
+                return res.json(stuff.Failure(error));
             }
 
-            res.json({
-                message: Item.modelName + ' deleted!'
-            });
+            res.json(stuff.Success(numDeletions, 
+                numDeletions ? Item.modelName + ' deleted!' : 'No ' + Item.modelName.toLowerCase() + ' to delete!'));
 
         });
 
