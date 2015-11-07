@@ -10,7 +10,8 @@ function Routes() {
     router.route('/')
         .post(controller.VerifyCredentials);
 
-    router.route('/:token')
+    // router.route('/:token')
+    router.route(/^\/(.+)/)
         .get(controller.VerifyToken);
 
     return router;
