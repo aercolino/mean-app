@@ -68,6 +68,7 @@ function HttpStatusCodes() {
 
 function Colors() {
     var result = {};
+
     result.DEFAULT      = '\x1b[0m';
     result.WHITE        = '\x1b[1;37m';
     result.BLACK        = '\x1b[0;30m';
@@ -85,7 +86,53 @@ function Colors() {
     result.YELLOW       = '\x1b[1;33m';
     result.GRAY         = '\x1b[0;30m';
     result.LIGHT_GRAY   = '\x1b[0;37m';
-    return result;    
+
+    // ['DEFAULT', 'WHITE', 'BLACK', ...]
+    result.allNames = Object.keys(result);
+
+    // ['\x1b[0m', '\x1b[1;37m', '\x1b[0;30m', ...]
+    result.allValues = result.allNames.map(function(name){
+        return result[name];
+    });
+
+    // '\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...'
+    var anyValue = result.allValues.map(function(value){
+        return value.replace(/\W/g, '\\$&');
+    }).join('|');
+
+    // '(?\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...)+(\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...)'
+    var anySequenceOfValues = '(?:' + result.anyValue + ')+(' + result.anyValue + ')';
+
+    var reAnySequenceOfValues = new RegExp(anySequenceOfValues, 'g');
+    var lastValueOfSequence = '$1';
+
+    function paint(COLOR) {
+        return function (string) {
+            var colored = COLOR + string + result.DEFAULT;
+            var simplified = colored.replace(reAnySequenceOfValues, lastValueOfSequence);
+            return simplified;
+        }
+    }
+
+    result.Default     = paint(result.DEFAULT);
+    result.White       = paint(result.WHITE);
+    result.Black       = paint(result.BLACK);
+    result.Blue        = paint(result.BLUE);
+    result.LightBlue   = paint(result.LIGHT_BLUE);
+    result.Green       = paint(result.GREEN);
+    result.LightGreen  = paint(result.LIGHT_GREEN);
+    result.Cyan        = paint(result.CYAN);
+    result.LightCyan   = paint(result.LIGHT_CYAN);
+    result.Red         = paint(result.RED);
+    result.LightRed    = paint(result.LIGHT_RED);
+    result.Purple      = paint(result.PURPLE);
+    result.LightPurple = paint(result.LIGHT_PURPLE);
+    result.Brown       = paint(result.BROWN);
+    result.Yellow      = paint(result.YELLOW);
+    result.Gray        = paint(result.GRAY);
+    result.LightGray   = paint(result.LIGHT_GRAY);
+
+    return result;
 }
 
 
@@ -94,19 +141,18 @@ function MorganFactory(template) {
     var color = self.color;
     var Morgan = require('morgan');
     Morgan.token('current-user', function (req, res) { 
-        var result = (req.currentUser 
-            ? color.LIGHT_BLUE + req.currentUser.name 
-            : color.LIGHT_RED  + 'Anonymous') + color.DEFAULT;
+        var result = req.currentUser 
+            ? color.LightBlue(req.currentUser.name) 
+            : color.LightRed('Anonymous');
         return result; 
     });
     Morgan.token('status', function (req, res) { 
         var status = res._header ? res.statusCode : undefined;
-        var COLOR = status >= 500 ? color.RED
-            : status >= 400 ? color.YELLOW
-            : status >= 300 ? color.CYAN
-            : status >= 200 ? color.GREEN
-            : color.DEFAULT;
-        var result = COLOR + status + color.DEFAULT
+        var result = status >= 500 ? color.Red(status)
+            : status >= 400 ? color.Yellow(status)
+            : status >= 300 ? color.Cyan(status)
+            : status >= 200 ? color.Green(status)
+            : status;
         return result; 
     });
     return Morgan(template);
