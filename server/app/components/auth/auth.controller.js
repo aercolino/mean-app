@@ -24,11 +24,11 @@ function VerifyCredentials(req, res) {
     }).select('password').exec(function(error, user) {
 
         if (error) {
-            return res.status(stuff.httpStatusCode['Bad Request']).json(stuff.Failure(error));
+            return stuff.SendFailure(res, error, 'Bad Request');
         }
 
         if (!user) {
-            return res.status(stuff.httpStatusCode['Unauthorized']).json(stuff.Failure('Authentication failed. Wrong name.'));
+            return stuff.SendFailure(res, 'Authentication failed. Wrong name.', 'Unauthorized');
         }
 
         var options = Extend({}, user.password);
@@ -37,11 +37,11 @@ function VerifyCredentials(req, res) {
         Hash(options, function(error, result) {
 
             if (error) {
-                return res.status(stuff.httpStatusCode['Bad Request']).json(stuff.Failure(error));
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
             if (user.password.key != result.key) {
-                return res.status(stuff.httpStatusCode['Unauthorized']).json(stuff.Failure('Authentication failed. Wrong password.'));
+                return stuff.SendFailure(res, 'Authentication failed. Wrong password.', 'Unauthorized');
             }
 
             var simplified = {
@@ -51,7 +51,7 @@ function VerifyCredentials(req, res) {
             var token = jsonWT.sign(simplified, config.secret, {
                 expiresIn: "10h"
             });
-            res.json(stuff.Success(token));
+            stuff.SendSuccess(res, token);
 
         });
 
@@ -65,13 +65,13 @@ function VerifyToken(req, res, next) {
     var httpError = stuff.httpStatusCode[req.params[0] ? 'Bad Request' : 'Forbidden'];
 
     if (!token) {
-        return res.status(httpError).json(stuff.Failure('Authentication failed. No token.'));
+        return stuff.SendFailure(res, 'Authentication failed. No token.', httpError);
     }
 
     jsonWT.verify(token, config.secret, function(error, simplified) {
 
         if (error) {
-            return res.status(httpError).json(stuff.Failure('Authentication failed. Wrong token.'));
+            return stuff.SendFailure(res, 'Authentication failed. Wrong token.', httpError);
         }
 
         User.findOne({
@@ -79,14 +79,13 @@ function VerifyToken(req, res, next) {
         }, function(error, user) {
 
             if (error) {
-                return res.status(httpError).json(stuff.Failure('Authentication failed. Wrong user.'));
+                return stuff.SendFailure(res, 'Authentication failed. Wrong user.', httpError);
             }
 
-            req.current_user = user;
-            console.log("Access granted to '%s'.", req.current_user.name);
+            req.currentUser = user;
 
             if (req.params[0]) {
-                return res.json(stuff.Success(req.current_user.name, 'Access granted.'));
+                return stuff.SendSuccess(res, req.currentUser.name);
             }
 
             next();

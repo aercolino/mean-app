@@ -1,11 +1,15 @@
 'use strict';
 
-module.exports = {
+var self = {
     Success: Success,
     Failure: Failure,
+    SendSuccess: SendSuccess,
+    SendFailure: SendFailure,
     IsPromise: IsPromise,
     httpStatusCode: HttpStatusCodes()
 };
+
+module.exports = self;
 
 return;
 
@@ -18,10 +22,10 @@ function IsPromise(object) {
 
 
 
-function Failure(err) {
+function Failure(error) {
     return {
         success: false,
-        message: typeof err == 'string' ? err : (err.err || err.message || err || null)
+        message: typeof error == 'string' ? error : (error.err || error.message || error || null)
     };
 }
 
@@ -33,6 +37,20 @@ function Success(payload, message) {
         payload: payload,
         message: message
     };
+}
+
+
+
+function SendFailure(response, error, status) {
+    var code = /^\d+$/.test(status) ? status : self.httpStatusCode[status];
+    response.status(code || 500).json(self.Failure(error));
+}
+
+
+
+function SendSuccess(response, payload, message, status) {
+    var code = /^\d+$/.test(status) ? status : self.httpStatusCode[status];
+    response.status(code || 200).json(self.Success(payload, message));
 }
 
 
