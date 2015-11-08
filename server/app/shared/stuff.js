@@ -60,7 +60,9 @@ function SendSuccess(response, payload, message, status) {
 function HttpStatusCodes() {
     var http = require('http');
     var result = {};
-    Object.keys(http.STATUS_CODES).map(function(code) {result[http.STATUS_CODES[code]] = code;})
+    Object.keys(http.STATUS_CODES).map(function(code) {
+        result[http.STATUS_CODES[code]] = code;
+    })
     return result;
 }
 
@@ -69,6 +71,7 @@ function HttpStatusCodes() {
 function Colors() {
     var result = {};
 
+    /* beautify preserve:start */
     result.DEFAULT      = '\x1b[0m';
     result.WHITE        = '\x1b[1;37m';
     result.BLACK        = '\x1b[0;30m';
@@ -86,34 +89,31 @@ function Colors() {
     result.YELLOW       = '\x1b[1;33m';
     result.GRAY         = '\x1b[0;30m';
     result.LIGHT_GRAY   = '\x1b[0;37m';
+    /* beautify preserve:end */
 
     // ['DEFAULT', 'WHITE', 'BLACK', ...]
     result.allNames = Object.keys(result);
 
     // ['\x1b[0m', '\x1b[1;37m', '\x1b[0;30m', ...]
-    result.allValues = result.allNames.map(function(name){
+    result.allValues = result.allNames.map(function(name) {
         return result[name];
     });
 
-    // '\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...'
-    var anyValue = result.allValues.map(function(value){
+    var anyValue = result.allValues.map(function(value) {
         return value.replace(/\W/g, '\\$&');
     }).join('|');
-
-    // '(?\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...)+(\\x1b\[0m|\\x1b\[1;37m|\\x1b\[0;30m|...)'
-    var anySequenceOfValues = '(?:' + result.anyValue + ')+(' + result.anyValue + ')';
-
-    var reAnySequenceOfValues = new RegExp(anySequenceOfValues, 'g');
+    var anySequenceOfValues = new RegExp('(?:' + result.anyValue + ')+(' + result.anyValue + ')', 'g');
     var lastValueOfSequence = '$1';
 
     function paint(COLOR) {
-        return function (string) {
+        return function(string) {
             var colored = COLOR + string + result.DEFAULT;
-            var simplified = colored.replace(reAnySequenceOfValues, lastValueOfSequence);
+            var simplified = colored.replace(anySequenceOfValues, lastValueOfSequence);
             return simplified;
         }
     }
 
+    /* beautify preserve:start */
     result.Default     = paint(result.DEFAULT);
     result.White       = paint(result.WHITE);
     result.Black       = paint(result.BLACK);
@@ -131,29 +131,35 @@ function Colors() {
     result.Yellow      = paint(result.YELLOW);
     result.Gray        = paint(result.GRAY);
     result.LightGray   = paint(result.LIGHT_GRAY);
+    /* beautify preserve:end */
 
     return result;
 }
 
 
 
-function MorganFactory(template) {
+function MorganFactory() {
     var color = self.color;
+
     var Morgan = require('morgan');
-    Morgan.token('current-user', function (req, res) { 
-        var result = req.currentUser 
-            ? color.LightBlue(req.currentUser.name) 
-            : color.LightRed('Anonymous');
-        return result; 
+
+    Morgan.token('current-user', function(req, res) {
+        var result = req.currentUser ? color.LightBlue(req.currentUser.name) : color.LightRed('Anonymous');
+        return result;
     });
-    Morgan.token('status', function (req, res) { 
+
+    Morgan.token('status', function(req, res) {
         var status = res._header ? res.statusCode : undefined;
-        var result = status >= 500 ? color.Red(status)
+        /* beautify preserve:start */
+        var result =
+              status >= 500 ? color.Red(status)
             : status >= 400 ? color.Yellow(status)
             : status >= 300 ? color.Cyan(status)
             : status >= 200 ? color.Green(status)
             : status;
-        return result; 
+        /* beautify preserve:end */
+        return result;
     });
-    return Morgan(template);
+
+    return Morgan.apply(null, arguments);
 }
