@@ -6,7 +6,9 @@ var self = {
     SendSuccess: SendSuccess,
     SendFailure: SendFailure,
     IsPromise: IsPromise,
-    httpStatusCode: HttpStatusCodes()
+    Morgan: MorganFactory,
+    httpStatusCode: HttpStatusCodes(),
+    color: Colors()
 };
 
 module.exports = self;
@@ -64,3 +66,48 @@ function HttpStatusCodes() {
 
 
 
+function Colors() {
+    var result = {};
+    result.DEFAULT      = '\x1b[0m'
+    result.WHITE        = '\x1b[1;37m'
+    result.BLACK        = '\x1b[0;30m'
+    result.BLUE         = '\x1b[0;34m'
+    result.LIGHT_BLUE   = '\x1b[1;34m'
+    result.GREEN        = '\x1b[0;32m'
+    result.LIGHT_GREEN  = '\x1b[1;32m'
+    result.CYAN         = '\x1b[0;36m'
+    result.LIGHT_CYAN   = '\x1b[1;36m'
+    result.RED          = '\x1b[0;31m'
+    result.LIGHT_RED    = '\x1b[1;31m'
+    result.PURPLE       = '\x1b[0;35m'
+    result.LIGHT_PURPLE = '\x1b[1;35m'
+    result.BROWN        = '\x1b[0;33m'
+    result.YELLOW       = '\x1b[1;33m'
+    result.GRAY         = '\x1b[0;30m'
+    result.LIGHT_GRAY   = '\x1b[0;37m'
+    return result;    
+}
+
+
+
+function MorganFactory(template) {
+    var color = self.color;
+    var Morgan = require('morgan');
+    Morgan.token('current-user', function (req, res) { 
+        var result = (req.currentUser 
+            ? color.LIGHT_BLUE + req.currentUser.name 
+            : color.LIGHT_RED  + 'Anonymous') + color.DEFAULT;
+        return result; 
+    });
+    Morgan.token('status', function (req, res) { 
+        var status = res._header ? res.statusCode : undefined;
+        var COLOR = status >= 500 ? color.RED
+            : status >= 400 ? color.YELLOW
+            : status >= 300 ? color.CYAN
+            : status >= 200 ? color.GREEN
+            : color.DEFAULT;
+        var result = COLOR + status + color.DEFAULT
+        return result; 
+    });
+    return Morgan(template);
+}

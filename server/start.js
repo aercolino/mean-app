@@ -10,15 +10,16 @@ var port = process.env.PORT || 8080;
 var Express = require('express');
 var app     = Express();
 
-var bodyParser = require('body-parser');
-var Morgan     = require('morgan');
-var mongoose   = require('mongoose');
-
 var config = require('./app/config');
 
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(Morgan('dev'));
+
+var Morgan = require('./app/shared/stuff').Morgan;
+app.use(Morgan(':date[iso] :current-user :method :url :status :response-time ms - :res[content-length] bytes'));
+
+var mongoose   = require('mongoose');
 mongoose.connect(config.database);
 
 app.get('/', function(req, res) {
