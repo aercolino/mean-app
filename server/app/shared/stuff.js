@@ -105,7 +105,7 @@ function ColorFactory() {
     var anySequenceOfValues = new RegExp('(?:' + result.anyValue + ')+(' + result.anyValue + ')', 'g');
     var lastValueOfSequence = '$1';
 
-    function paint(COLOR) {
+    function Paint(COLOR) {
         return function(string) {
             var colored = COLOR + string + result.DEFAULT;
             var simplified = colored.replace(anySequenceOfValues, lastValueOfSequence);
@@ -114,23 +114,23 @@ function ColorFactory() {
     }
 
     /* beautify preserve:start */
-    result.Default     = paint(result.DEFAULT);
-    result.White       = paint(result.WHITE);
-    result.Black       = paint(result.BLACK);
-    result.Blue        = paint(result.BLUE);
-    result.LightBlue   = paint(result.LIGHT_BLUE);
-    result.Green       = paint(result.GREEN);
-    result.LightGreen  = paint(result.LIGHT_GREEN);
-    result.Cyan        = paint(result.CYAN);
-    result.LightCyan   = paint(result.LIGHT_CYAN);
-    result.Red         = paint(result.RED);
-    result.LightRed    = paint(result.LIGHT_RED);
-    result.Purple      = paint(result.PURPLE);
-    result.LightPurple = paint(result.LIGHT_PURPLE);
-    result.Brown       = paint(result.BROWN);
-    result.Yellow      = paint(result.YELLOW);
-    result.Gray        = paint(result.GRAY);
-    result.LightGray   = paint(result.LIGHT_GRAY);
+    result.Default     = Paint(result.DEFAULT);
+    result.White       = Paint(result.WHITE);
+    result.Black       = Paint(result.BLACK);
+    result.Blue        = Paint(result.BLUE);
+    result.LightBlue   = Paint(result.LIGHT_BLUE);
+    result.Green       = Paint(result.GREEN);
+    result.LightGreen  = Paint(result.LIGHT_GREEN);
+    result.Cyan        = Paint(result.CYAN);
+    result.LightCyan   = Paint(result.LIGHT_CYAN);
+    result.Red         = Paint(result.RED);
+    result.LightRed    = Paint(result.LIGHT_RED);
+    result.Purple      = Paint(result.PURPLE);
+    result.LightPurple = Paint(result.LIGHT_PURPLE);
+    result.Brown       = Paint(result.BROWN);
+    result.Yellow      = Paint(result.YELLOW);
+    result.Gray        = Paint(result.GRAY);
+    result.LightGray   = Paint(result.LIGHT_GRAY);
     /* beautify preserve:end */
 
     return result;
@@ -151,9 +151,9 @@ function MorganFactory() {
         return result;
     });
 
-    var defaultStatusToken = Morgan['status'];
+    var DefaultStatusToken = Morgan['status'];
     Morgan.token('status', function(req, res, type) {
-        var status = defaultStatusToken(req, res);
+        var status = DefaultStatusToken(req, res);
         if ('colored' == type) {
             /* beautify preserve:start */
             var result =
