@@ -99,22 +99,40 @@ function ColorFactory() {
         return result[name];
     });
 
-    var anyValue = result.allValues.map(function(value) {
+    var anyValueFinder = result.allValues.map(function(value) {
         return value.replace(/\W/g, '\\$&');
     }).join('|');
-    var anySequenceOfValues = new RegExp('(?:' + result.anyValue + ')+(' + result.anyValue + ')', 'g');
-    var lastValueOfSequence = '$1';
+
+    var anySequenceOfValues = new RegExp('(?:' + anyValueFinder + ')+(' + anyValueFinder + ')', 'g');
+    
+    var anyValue = new RegExp('(' + anyValueFinder + ')', 'g');
+
+    function WrapUnwrapped(string, open, close, wrappedFinder) {
+        var finder = '(.*?)(' + wrappedFinder + ')|(.*)';
+        return String(string).replace(new RegExp(finder, 'g'), Wrap);
+        function Wrap(all, unwrapped, wrapped, rest) { 
+            unwrapped = unwrapped || rest || ''; 
+            wrapped = wrapped || ''; 
+            var result = (unwrapped == '' ? '' : open + unwrapped + close) + wrapped;
+            return result;
+        }
+    }
 
     function Paint(COLOR) {
         return function(string) {
-            var colored = COLOR + string + result.DEFAULT;
-            var simplified = colored.replace(anySequenceOfValues, lastValueOfSequence);
+            var wrappedFinder = '(?:' + anyValueFinder + ').*?' + result.DEFAULT.replace(/\W/g, '\\$&');
+            var colored = WrapUnwrapped(string, COLOR, result.DEFAULT, wrappedFinder);
+            var simplified = colored.replace(anySequenceOfValues, '$1');
             return simplified;
         }
     }
 
+    result.Default = function(string) {
+        var decolored = string.replace(anyValue, '');
+        return decolored;
+    };
+
     /* beautify preserve:start */
-    result.Default     = Paint(result.DEFAULT);
     result.White       = Paint(result.WHITE);
     result.Black       = Paint(result.BLACK);
     result.Blue        = Paint(result.BLUE);

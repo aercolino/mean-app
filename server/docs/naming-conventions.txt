@@ -16,3 +16,5 @@ UpperCamelCase = active
 LowerCamelCase = passive
 UPPER_SNAKE_CASE = constant
 lower_snake_case = ?
+
+*Finder <- suffix for strings that are the source of a regular expression.

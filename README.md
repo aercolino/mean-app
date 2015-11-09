@@ -65,3 +65,13 @@ Failures:
         "success": false,
         "message": "Authentication failed. Wrong user."
     }
+
+
+## Tests
+
+### Server side testing
+    $ npm install -g mocha
+
+### Code coverage
+    $ npm install -g istanbul
+
