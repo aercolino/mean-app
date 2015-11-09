@@ -1,5 +1,8 @@
 var assert = require('assert');
-var color = require(__filename.replace(/^(.*?)\/test\//, '$1/').replace(/\.test\.js$/, '.js')).color;
+function source(filename) { 
+    return filename.replace(/^(.*?)\/test\//, '$1/').replace(/\.test\.js$/, '.js'); 
+}
+var color = require(source(__filename)).color;
 
 describe('ColorFactory', function() {
 
