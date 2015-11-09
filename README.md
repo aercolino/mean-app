@@ -71,6 +71,7 @@ Failures:
 
 ### Server side testing
     $ npm install -g mocha
+    $ mocha 'test/**/*.js'
 
 ### Code coverage
     $ npm install -g istanbul
