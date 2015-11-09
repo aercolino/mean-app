@@ -8,7 +8,7 @@ var self = {
     IsPromise: IsPromise,
     Morgan: MorganFactory,
     httpStatusCode: HttpStatusCodes(),
-    color: Colors()
+    color: ColorFactory()
 };
 
 module.exports = self;
@@ -68,7 +68,7 @@ function HttpStatusCodes() {
 
 
 
-function Colors() {
+function ColorFactory() {
     var result = {};
 
     /* beautify preserve:start */
@@ -143,21 +143,29 @@ function MorganFactory() {
 
     var Morgan = require('morgan');
 
-    Morgan.token('current-user', function(req, res) {
-        var result = req.currentUser ? color.LightBlue(req.currentUser.name) : color.LightRed('Anonymous');
+    Morgan.token('current-user', function(req, res, type) {
+        var result = req.currentUser ? req.currentUser.name : 'Anonymous';
+        if ('colored' == type) {
+            result = req.currentUser ? color.LightBlue(req.currentUser.name) : color.LightRed('Anonymous');
+        }
         return result;
     });
 
-    Morgan.token('status', function(req, res) {
-        var status = res._header ? res.statusCode : undefined;
-        /* beautify preserve:start */
-        var result =
-              status >= 500 ? color.Red(status)
-            : status >= 400 ? color.Yellow(status)
-            : status >= 300 ? color.Cyan(status)
-            : status >= 200 ? color.Green(status)
-            : status;
-        /* beautify preserve:end */
+    var defaultStatusToken = Morgan['status'];
+    Morgan.token('status', function(req, res, type) {
+        var status = defaultStatusToken(req, res);
+        if ('colored' == type) {
+            /* beautify preserve:start */
+            var result =
+                  status >= 500 ? color.Red(status)
+                : status >= 400 ? color.Yellow(status)
+                : status >= 300 ? color.Cyan(status)
+                : status >= 200 ? color.Green(status)
+                : status;
+            /* beautify preserve:end */            
+        } else {
+            result = status;
+        }
         return result;
     });
 

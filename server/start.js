@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var Morgan = require('./app/shared/stuff').Morgan;
-app.use(Morgan(':date[iso] :current-user :method :url :status :response-time ms - :res[content-length] bytes'));
+app.use(Morgan(':date[iso] :current-user[colored] :method :url :status[colored] :response-time ms - :res[content-length] bytes'));
 
 var mongoose   = require('mongoose');
 mongoose.connect(config.database);
@@ -41,4 +41,5 @@ app.use('/api/users',  require('./app/components/users/user.routes'));
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port + ' since ' + (new Date));
+var color = require('./app/shared/stuff').color;
+console.log('Magic happens on port ' + color.Purple(port) + ' since ' + (new Date));
