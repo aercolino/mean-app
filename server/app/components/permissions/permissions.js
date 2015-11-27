@@ -4,6 +4,8 @@
     // Notice that 
     // -- the key is at the same time a unique name and a description of the permission.
     // -- roles are in UpperCamelCase and items are in lowerCamelCase.
+    // -- actions are always 'can' + UpperCamelCase. This is currently enforced in code.
+    // -- the format is always SUBJECT ACTION OBJECT.
     
     // Notice that in this case 
     // -- the definition must be an empty object. 
@@ -29,6 +31,8 @@
             }
         }
     },
+
+
 
     // This is an example of permission using an item for the subject and a role for the object.
 
