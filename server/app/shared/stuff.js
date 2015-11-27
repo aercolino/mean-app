@@ -8,12 +8,26 @@ var self = {
     IsPromise: IsPromise,
     Morgan: MorganFactory,
     httpStatusCode: HttpStatusCodes(),
-    color: ColorFactory()
+    color: ColorFactory(),
+    Apply: Apply,
+    TypeOf: TypeOf,
+    ArrayFind: ArrayFind
 };
 
 module.exports = self;
 
 return;
+
+
+
+function TypeOf(value) {
+  try {
+    return value.constructor.name;
+  }
+  catch (e) {
+    return value === null ? 'Null' : typeof value;
+  }
+}
 
 
 
@@ -104,15 +118,16 @@ function ColorFactory() {
     }).join('|');
 
     var anySequenceOfValues = new RegExp('(?:' + anyValueFinder + ')+(' + anyValueFinder + ')', 'g');
-    
+
     var anyValue = new RegExp('(' + anyValueFinder + ')', 'g');
 
     function WrapUnwrapped(string, open, close, wrappedFinder) {
         var finder = '(.*?)(' + wrappedFinder + ')|(.*)';
         return String(string).replace(new RegExp(finder, 'g'), Wrap);
-        function Wrap(all, unwrapped, wrapped, rest) { 
-            unwrapped = unwrapped || rest || ''; 
-            wrapped = wrapped || ''; 
+
+        function Wrap(all, unwrapped, wrapped, rest) {
+            unwrapped = unwrapped || rest || '';
+            wrapped = wrapped || '';
             var result = (unwrapped == '' ? '' : open + unwrapped + close) + wrapped;
             return result;
         }
@@ -180,7 +195,7 @@ function MorganFactory() {
                 : status >= 300 ? color.Cyan(status)
                 : status >= 200 ? color.Green(status)
                 : status;
-            /* beautify preserve:end */            
+            /* beautify preserve:end */
         } else {
             result = status;
         }
@@ -189,3 +204,55 @@ function MorganFactory() {
 
     return Morgan.apply(null, arguments);
 }
+
+
+
+function Apply(functionName, context, args) {
+    if (arguments.length == 1) {
+        args = [];
+        context = global;
+    } else
+    if (arguments.length == 2) {
+        args = context;
+        context = global;
+    }
+    var namespaces = functionName.split(".");
+    var func = namespaces.pop();
+    for (var i = 0; i < namespaces.length; i++) {
+        context = context[namespaces[i]];
+    }
+    var result = context[func].apply(context, args);
+    return result;
+}
+
+
+
+function ArrayFind(array, Predicate, thisArg) {
+    function MyPredicate(element, index, arr) {
+        return Promise.resolve(Predicate.call(thisArg, element, index, arr))
+            .then(function (value) {
+                return value ? element : undefined;
+            });
+    }
+    function MyResult(element) {
+        this.element = element;
+    }
+
+    return array.reduce(function(sequence, element, index, arr) {
+        return sequence
+            .then(function(found) {
+                if (found) {
+                    throw new MyResult(found);
+                }
+                return MyPredicate(element, index, arr);
+            });
+        }, Promise.resolve())
+        .catch(function(reason) {
+            if (reason instanceof MyResult) {
+                return reason.element;
+            }
+            throw reason;
+        });
+}
+
+
