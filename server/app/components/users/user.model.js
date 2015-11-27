@@ -19,7 +19,7 @@ var schema   = new mongoose.Schema({
         required: true,
         select: false
     },
-    admin: Boolean
+    roles: []
 });
 
 module.exports = mongoose.model('User', schema);
