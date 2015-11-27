@@ -81,7 +81,7 @@ function HttpStatusCodes() {
 }
 
 
-
+// See http://andowebsit.es/blog/noteslog.com/post/how-to-customize-morganjs/
 function ColorFactory() {
     var result = {};
 
@@ -170,7 +170,7 @@ function ColorFactory() {
 }
 
 
-
+// See http://andowebsit.es/blog/noteslog.com/post/how-to-customize-morganjs/
 function MorganFactory() {
     var color = self.color;
 
@@ -206,7 +206,7 @@ function MorganFactory() {
 }
 
 
-
+// See http://stackoverflow.com/a/359910/250838
 function Apply(functionName, context, args) {
     if (arguments.length == 1) {
         args = [];
@@ -226,7 +226,7 @@ function Apply(functionName, context, args) {
 }
 
 
-
+// See http://andowebsit.es/blog/noteslog.com/post/how-to-support-promised-predicates-in-array-find/
 function ArrayFind(array, Predicate, thisArg) {
     function MyPredicate(element, index, arr) {
         return Promise.resolve(Predicate.call(thisArg, element, index, arr))
