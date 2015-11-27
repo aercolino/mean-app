@@ -1,9 +1,9 @@
 'use strict';
 
-var Promise = require('es6-promise').Promise;
 var fields = [
     'name', 
     function (password) { 
+        var Promise = require('es6-promise').Promise;
         return new Promise(function (resolve, reject) {
             var Hash = require(global.absPath + '/app/components/auth/hash');
             Hash({plaintext: password}, function (error, result) {
