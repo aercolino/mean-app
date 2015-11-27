@@ -283,6 +283,10 @@ function Compile(permissions) {
 
 function Can(subject, action, object, callback) {
 
+    if (! (action.search(/^can[A-Z]/) === 0)) {
+        action = 'can' + action[0].toUpperCase() + action.substr(1);
+    }
+
     var ps = permissions.String[action].concat(permissions.RegExp);
 
     var priority = {
