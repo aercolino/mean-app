@@ -69,7 +69,7 @@
     // This is an example of permission using items for the subject and the object.
 
     // Notice that 
-    // -- as a policy, a given subject/object A matches a string or a regular expression definition X iif A.replace(X, '') === ''.
+    // -- a given subject/object A matches a string or a regexp definition X iif A.replace(X, '') === ''.
 
     // Notice that in this case 
     // -- a match-all RegExp for the action and the object makes this permission quite generic.
