@@ -166,7 +166,11 @@ function Compile(permissions) {
             var Role = require(global.absPath + '/app/components/roles/role.model');
             Role.findOne({name: name}, function (err, role) {
                 if (err) {
-                    throw Error(err);
+                    return reject(Error(err));
+                }
+                if (! role) {
+//                    console.warn();
+                    return reject('No role "' + name + '" found. Ignoring its uses...');
                 }
                 def = {
                     model: role.model
@@ -184,10 +188,10 @@ function Compile(permissions) {
                                 var Item = item.collection;
                                 Item.count(criteria, function(error, result) {
                                     if (error) {
-                                        reject(Error(error));
+                                        return reject(Error(error));
                                     }
                                     if (result > 1) {
-                                        reject(Error('Data Corruption: id:' + item.id + ' identifies ' + result + ' documents.'));
+                                        return reject(Error('Data Corruption: id:' + item.id + ' identifies ' + result + ' documents.'));
                                     }
                                     resolve(result === 1);
                                 });
