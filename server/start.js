@@ -19,8 +19,11 @@ app.use(bodyParser.json());
 var Morgan = require('./app/shared/stuff').Morgan;
 app.use(Morgan(':date[iso] :current-user[colored] :method :url :status[colored] :response-time ms - :res[content-length] bytes'));
 
-var mongoose   = require('mongoose');
+var mongoose = require('mongoose');
 mongoose.connect(config.database);
+
+var permissions = require('./app/components/permissions/permission.model');
+global.Can = permissions.Can;
 
 app.get('/', function(req, res) {
     res.send('Hello! The API is at http://localhost:' + port + '/api');
