@@ -1,4 +1,4 @@
-{
+module.exports = {
     // This is an example of permission using roles for the subject and the object.
 
     // Notice that 
@@ -17,7 +17,7 @@
     // This is an example of permission using a role for the subject and an item for the object.
 
     // Notice that 
-    // -- the specification entails both a modelName and a restriction.
+    // -- the specification entails both a model and a restriction.
     // -- the restriction always receives two arguments: the subject and the object.
 
     // Notice that in this case 
@@ -25,7 +25,7 @@
 
     'Translators canTranslate documentsNeedingTranslation': {
         documentsNeedingTranslation: {
-            modelName: 'Document',
+            model: 'Document',
             restriction: function (_, document) {
                 return document.translations.length < 2;
             }
@@ -57,7 +57,7 @@
     'anybody canEdit theirStuff': {
         anybody: 'User',
         theirStuff: {
-            modelName: /.*/,
+            model: /.*/,
             restriction: function (anybody, theirStuff) { 
                 return theirStuff.owner_id && (theirStuff.owner_id == anybody.id);
             }
@@ -76,7 +76,7 @@
 
     'anyAdmin canDo everything': {
         anyAdmin: {
-            modelName: 'User',
+            model: 'User',
             restriction: function (anyAdmin) {
                 return anyAdmin.isAdmin;
             }

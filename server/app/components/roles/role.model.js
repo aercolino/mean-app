@@ -10,7 +10,7 @@ var schema   = new mongoose.Schema({
     },
 
     // User, Bear, ...
-    modelName: {
+    model: {
         type: String,
         required: true
     },

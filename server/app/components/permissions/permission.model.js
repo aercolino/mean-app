@@ -101,8 +101,8 @@ function Compile(permissions) {
 
 
 
-    function hasModel(item, modelName) {
-        return item.constructor.modelName.replace(modelName, '') === '';
+    function hasModel(item, model) {
+        return item.constructor.modelName.replace(model, '') === '';
     }
 
 
@@ -114,16 +114,16 @@ function Compile(permissions) {
             case 'String':
             case 'RegExp':
                 def = {
-                    modelName: def,
+                    model: def,
                 };
             break;
             case 'Object':
-                switch (TypeOf(def.modelName)) {
+                switch (TypeOf(def.model)) {
                     case 'String':
                     case 'RegExp':
                     break;
                     default:
-                        err = 'type of modelName of item "' + name + '" must be String or RegExp';
+                        err = 'type of model of item "' + name + '" must be String or RegExp';
                     break;
                 }
                 switch (TypeOf(def.restriction)) {
@@ -145,7 +145,7 @@ function Compile(permissions) {
         def.complexity = def.restriction ? 1 : 0;
         def.matches = function (subject, object) {
             var item = this.actor == 'subject' ? subject : object;
-            if (! hasModel(item, this.modelName)) {
+            if (! hasModel(item, this.model)) {
                 return false;
             }
             var result = ! this.restriction || this.restriction(subject, object);
@@ -169,7 +169,7 @@ function Compile(permissions) {
                     throw Error(err);
                 }
                 def = {
-                    modelName: role.modelName
+                    model: role.model
                 };
                 switch (TypeOf(role.restriction)) {
                     case 'Object':
@@ -177,7 +177,7 @@ function Compile(permissions) {
                         def.matches = function (subject, object) {
                             return new Promise(function (resolve, reject) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.modelName)) {
+                                if (! hasModel(item, this.model)) {
                                     return false;
                                 }
                                 var criteria = Extend(role.restriction, {id: item.id});
@@ -198,7 +198,7 @@ function Compile(permissions) {
                         def.complexity = 1;
                         def.matches = function (subject, object) {
                             var item = this.actor == 'subject' ? subject : object;
-                            if (! hasModel(item, this.modelName)) {
+                            if (! hasModel(item, this.model)) {
                                 return false;
                             }
                             var result = !!Apply(role.restriction, [subject, object]);
@@ -210,7 +210,7 @@ function Compile(permissions) {
                         if (role.restriction) {
                             def.matches = function (subject, object) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.modelName)) {
+                                if (! hasModel(item, this.model)) {
                                     return false;
                                 }
                                 return true;
@@ -218,7 +218,7 @@ function Compile(permissions) {
                         } else {
                             def.matches = function (subject, object) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.modelName)) {
+                                if (! hasModel(item, this.model)) {
                                     return false;
                                 }
                                 var result = TypeOf(item.roles) == 'Array' && item.roles.indexOf(role.name) > -1;
