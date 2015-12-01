@@ -93,7 +93,7 @@ function Compile(permissions) {
             
 
         }).catch(function(reason) {
-            console.log(reason);
+            console.log(reason + '\n-- Ignoring permission "' + name + '".');
         });
     });
 
@@ -169,8 +169,7 @@ function Compile(permissions) {
                     return reject(Error(err));
                 }
                 if (! role) {
-//                    console.warn();
-                    return reject('No role "' + name + '" found. Ignoring its uses...');
+                    return reject('No role "' + name + '" found.');
                 }
                 def = {
                     model: role.model
