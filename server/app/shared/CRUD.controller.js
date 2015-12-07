@@ -81,10 +81,10 @@ function CRUD_Controller(Item, fields) {
         Item.find(function(error, items) {
 
             if (error) {
-                return res.json(stuff.Failure(error));
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
-            res.json(stuff.Success(items, items.length + ' items'));
+            stuff.SendSuccess(res, items, items.length + ' items');
 
         });
 
@@ -104,10 +104,10 @@ function CRUD_Controller(Item, fields) {
             item.save(function(error) {
 
                 if (error) {
-                    return res.json(stuff.Failure(error));
+                    return stuff.SendFailure(res, error, 'Bad Request');
                 }
 
-                res.json(stuff.Success(item._id, Item.modelName + ' created!'));
+                stuff.SendSuccess(res, item._id, Item.modelName + ' created!');
 
             });
         });
@@ -121,10 +121,10 @@ function CRUD_Controller(Item, fields) {
         Item.findById(req.params.item_id, function(error, item) {
 
             if (error) {
-                return res.json(stuff.Failure(error));
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
-            res.json(stuff.Success(item));
+            stuff.SendSuccess(res, item);
 
         });
 
@@ -137,11 +137,12 @@ function CRUD_Controller(Item, fields) {
         Item.findById(req.params.item_id, function(error, item) {
 
             if (error) {
-                return res.json(stuff.Failure(error));
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
             if (!item) {
-                return res.json(stuff.Failure('Expected a valid id.'));
+                error = 'Expected a valid id.';
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
             function UpdateItem() {
@@ -154,10 +155,10 @@ function CRUD_Controller(Item, fields) {
                     item.save(function(error) {
 
                         if (error) {
-                            return res.json(stuff.Failure(error));
+                            return stuff.SendFailure(res, error, 'Bad Request');
                         }
 
-                        res.json(stuff.Success(null, Item.modelName + ' updated!'));
+                        stuff.SendSuccess(res, null, Item.modelName + ' updated!');
 
                     });
 
@@ -170,11 +171,12 @@ function CRUD_Controller(Item, fields) {
                         if (allowed) {
                             UpdateItem();
                         } else {
-                            res.json(stuff.Failure(req.currentUser.name + ' cannot update ' + item.constructor.modelName + ' ' + item.id));
+                            var error = req.currentUser.name + ' cannot update ' + item.constructor.modelName + ' ' + item.id;
+                            stuff.SendFailure(res, error, 'Unauthorized');
                         }
                     })
                     .catch(function (error) {
-                        res.json(stuff.Failure(error));
+                        return stuff.SendFailure(res, error, 'Bad Request');
                     });
             } else {
                 UpdateItem();
@@ -193,11 +195,11 @@ function CRUD_Controller(Item, fields) {
         }, function(error, numDeletions) {
 
             if (error) {
-                return res.json(stuff.Failure(error));
+                return stuff.SendFailure(res, error, 'Bad Request');
             }
 
-            res.json(stuff.Success(numDeletions, 
-                numDeletions ? Item.modelName + ' deleted!' : 'No ' + Item.modelName.toLowerCase() + ' to delete!'));
+            var message = numDeletions ? Item.modelName + ' deleted!' : 'No ' + Item.modelName.toLowerCase() + ' to delete!';
+            stuff.SendSuccess(res, numDeletions, message);
 
         });
 
