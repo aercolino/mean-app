@@ -19,6 +19,7 @@ var schema   = new mongoose.Schema({
         required: true,
         select: false
     },
+    owner_id: mongoose.Schema.Types.ObjectId,
     roles: []
 });
 
