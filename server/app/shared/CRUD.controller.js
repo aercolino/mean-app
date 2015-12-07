@@ -144,7 +144,7 @@ function CRUD_Controller(Item, fields) {
                 return res.json(stuff.Failure('Expected a valid id.'));
             }
 
-            function update() {
+            function UpdateItem() {
                 FilterFields(fields, req.body, function (fFields) {
 
                     fFields.forEach(function (fField) {
@@ -164,11 +164,11 @@ function CRUD_Controller(Item, fields) {
                 });
             }
 
-            if (self.allowUpdate) {
-                Promise.resolve(self.allowUpdate(item, req))
+            if (self.AllowUpdate) {
+                Promise.resolve(self.AllowUpdate(item, req))
                     .then(function (allowed) {
                         if (allowed) {
-                            update();
+                            UpdateItem();
                         } else {
                             res.json(stuff.Failure(req.currentUser.name + ' cannot update ' + item.constructor.modelName + ' ' + item.id));
                         }
@@ -177,7 +177,7 @@ function CRUD_Controller(Item, fields) {
                         res.json(stuff.Failure(error));
                     });
             } else {
-                update();
+                UpdateItem();
             }
 
         });
