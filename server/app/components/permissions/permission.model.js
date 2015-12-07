@@ -54,24 +54,25 @@ function Compile(permissions) {
 
             permission.matches = function (subject, action, object) {
 
+                var that = this;
                 return new Promise(function (resolve, reject) {
 
                     Promise
-                    .resolve(this.action.matches(action))
+                    .resolve(that.action.matches(action))
                     .then(function (actionsMatch) {
                         if (! actionsMatch) {
                             return false;
                         }
-                        return this.subject.matches(subject, object);
+                        return that.subject.matches(subject, object);
                     })
                     .then(function (subjectsMatch) {
                         if (! subjectsMatch) {
                             return false;
                         }
-                        return this.object.matches(subject, object);
+                        return that.object.matches(subject, object);
                     })
                     .then(function (objectsMatch) {
-                        resolve(objectsMatch ? this : false);
+                        resolve(objectsMatch ? that : false);
                     })
                     .catch(function (err) {
                         reject(err);
