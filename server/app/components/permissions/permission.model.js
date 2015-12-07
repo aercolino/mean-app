@@ -297,22 +297,35 @@ function Can(subject, action, object, callback) {
         '0': [],
         '1': [],
         '2': [],
+        '3': [],
+        '4': [],
     };
     ps.forEach(function (p) {
-        priority[p.complexity].push(p);
+        priority[p.subject.complexity + p.object.complexity].push(p);
     });
-    ps = priority['0'].concat(priority['1']).concat(priority['2']);
+    ps = []
+        .concat(priority['0'])
+        .concat(priority['1'])
+        .concat(priority['2'])
+        .concat(priority['3'])
+        .concat(priority['4']);
 
-    Find(ps, function (p) {
+    var promise = Find(ps, function (p) {
+        console.log(p);
         return p.matches(subject, action, object);
-    })
-    .then(function (p) {
-        callback(undefined, p ? p : null);
-    })
-    .catch(function (error) {
-        callback(error);
     });
 
+    if (TypeOf(callback) === 'Function') {
+        return promise
+            .then(function (p) {
+                callback(undefined, p);
+            })
+            .catch(function (error) {
+                callback(error);
+            });
+    }
+
+    return promise;
 }
 
 
