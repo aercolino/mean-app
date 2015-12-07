@@ -24,3 +24,6 @@ lower_snake_case = ?
   - items: lowerCamelCase
 
 
+- self is the object to be exported from a module
+- that is the object to refer to from a function declared inside a method
+
