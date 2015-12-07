@@ -23,4 +23,11 @@ var fields = [
 
 var Item = require('./user.model');
 var Controller = require(global.absPath + '/app/shared/CRUD.controller');
-module.exports = Controller(Item, fields);
+var self = Controller(Item, fields);
+module.exports = self;
+
+
+self.allowUpdate = function (item, req) {
+    return Can(req.currentUser, 'edit', item);
+}
+
