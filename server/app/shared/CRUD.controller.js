@@ -22,7 +22,7 @@ function CRUD_Controller(Item, fields) {
     function FilterFields(fields, data, callback) {
 
         Promise
-            .all((fields || []).map(Filter))
+            .all((fields || []).map(Filter).filter(function (field) { return field; }))
             .then(callback)
             .catch(function (error) {
                 console.log(error);
@@ -35,10 +35,10 @@ function CRUD_Controller(Item, fields) {
             switch (typeof field) {
 
                 case 'string':
-                    result = {
+                    result = data[field] ? {
                         name: field,
                         value: data[field]
-                    };
+                    } : undefined;
                     break;
 
                 case 'function':
@@ -47,11 +47,11 @@ function CRUD_Controller(Item, fields) {
                         console.log('Expected a function with only one argument.');
                         return;
                     }
-                    result = {
+                    result = data[matches[1]] ? {
                         name: matches[1],
                         value: field(data[matches[1]])
-                    };
-                    if (stuff.IsPromise(result.value)) {
+                    } : undefined;
+                    if (result && stuff.IsPromise(result.value)) {
                         var promise = new Promise(function (resolve, reject) {
                             var name = result.name;
                             result.value.then(function (value) {
