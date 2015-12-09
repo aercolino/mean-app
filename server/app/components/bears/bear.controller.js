@@ -4,4 +4,16 @@ var fields = ['name'];
 
 var Item = require('./bear.model');
 var Controller = require(global.absPath + '/app/shared/CRUD.controller');
-module.exports = Controller(Item, fields);
+var self = Controller(Item, fields);
+module.exports = self;
+
+
+self.AllowUpdate = function (item, req) {
+    return Can(req.currentUser, 'edit', item)
+        .then(function (allowed) {
+            if (allowed) {
+                console.log('%s can edit %s %s because %s', req.currentUser.name, item.constructor.modelName, item.id, allowed.name);
+            }
+            return allowed;
+        });
+}

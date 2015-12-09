@@ -8,7 +8,7 @@ module.exports = {
     // -- the format is always SUBJECT ACTION OBJECT.
     
     // Notice that in this case 
-    // -- the definition must be an empty object. 
+    // -- the definition should be an empty object. 
 
     'Translators canTranslate DocumentsNeedingTranslation': {},
 
@@ -78,7 +78,7 @@ module.exports = {
         anyAdmin: {
             model: 'User',
             restriction: function (anyAdmin) {
-                return anyAdmin.isAdmin;
+                return anyAdmin.isAdmin();
             }
         },
         canDo: /.*/,

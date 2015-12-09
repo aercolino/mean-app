@@ -20,7 +20,13 @@ var schema   = new mongoose.Schema({
         select: false
     },
     owner_id: mongoose.Schema.Types.ObjectId,
-    roles: []
+    roles: [String]
 });
 
-module.exports = mongoose.model('User', schema);
+schema.methods.isAdmin = function () {
+    var result = this.roles.indexOf('Admin') > -1;
+    return result;
+};
+
+var self = mongoose.model('User', schema);
+module.exports = self;
