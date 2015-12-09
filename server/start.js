@@ -37,6 +37,8 @@ app.use('/api/tokens', require('./app/components/auth/auth.routes'));
 
 app.use('/api/bears',  require('./app/components/bears/bear.routes'));
 
+app.use('/api/roles',  require('./app/components/roles/role.routes'));
+
 app.use('/api/users',  require('./app/components/users/user.routes'));
 
 
