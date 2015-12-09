@@ -206,6 +206,37 @@ function MorganFactory() {
 }
 
 
+
+function DumpError(err) {
+    try {
+        if (err.stack) {
+            return console.log(err.stack);
+        }
+        if (err.message) {
+            return console.log(err.message)
+        }
+    } catch (e) {
+        return console.log(err);
+    }
+}
+
+
+
+function RequireComponent(type, name) {
+    try {
+        var Pluralize = require('pluralize');
+        var prefix = name.toLowerCase();
+        var folder = Pluralize(prefix);
+        var path = global.absPath + '/app/components/' + folder + '/' + prefix + '.' + type;
+        var result = require(path);
+    } catch (e) {
+        DumpError(e);
+        var result = undefined;
+    }
+    return result;
+}
+
+
 // See http://stackoverflow.com/a/359910/250838
 function Apply(functionName, context, args) {
     if (arguments.length == 1) {
@@ -219,6 +250,9 @@ function Apply(functionName, context, args) {
     var namespaces = functionName.split(".");
     var func = namespaces.pop();
     for (var i = 0; i < namespaces.length; i++) {
+        if (i === 0 && TypeOf(context[namespaces[i]]) === 'undefined') {
+            context[namespaces[i]] = RequireComponent('model', namespaces[i]);  // this could be undefined again...
+        }
         context = context[namespaces[i]];
     }
     var result = context[func].apply(context, args);

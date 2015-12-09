@@ -15,10 +15,10 @@ var schema   = new mongoose.Schema({
         required: true
     },
 
-    // If condition is a JSON,             then an item of model has this role if model.count(Extend({_id: item._id}, condition)).
-    // If condition is a non-empty string, then an item of model has this role if condition(item, name).
-    // If condition is FALSEy,             then an item of model has this role if item.roles.contains(name).
-    // If condition is TRUEy,              then an item of model has this role. (not very useful...)
+    // If restriction is a JSON,             then an item of model has this role if model.count(Extend({_id: item._id}, restriction)).
+    // If restriction is a non-empty string, then an item of model has this role if restriction(subject, object).
+    // If restriction is FALSEy,             then an item of model has this role if item.roles.contains(name).
+    // If restriction is TRUEy,              then an item of model has this role. (not very useful...)
     restriction: mongoose.Schema.Types.Mixed,
     
     valid_from: Date,

@@ -28,5 +28,9 @@ schema.methods.isAdmin = function () {
     return result;
 };
 
+schema.statics.owns = function (anybody, theirStuff) { 
+    return theirStuff.owner_id && (theirStuff.owner_id === anybody.id);
+};
+
 var self = mongoose.model('User', schema);
 module.exports = self;

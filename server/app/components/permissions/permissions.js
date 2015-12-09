@@ -59,7 +59,7 @@ module.exports = {
         theirStuff: {
             model: /.*/,
             restriction: function (anybody, theirStuff) { 
-                return theirStuff.owner_id && (theirStuff.owner_id == anybody.id);
+                return theirStuff.owner_id && (theirStuff.owner_id === anybody.id);
             }
         }
     },

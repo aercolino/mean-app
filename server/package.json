@@ -2,13 +2,14 @@
   "name": "ProjectApp",
   "main": "start",
   "dependencies": {
-    "express": "~4.0.0",
-    "mongoose": "~3.6.13",
     "body-parser": "~1.0.1",
-    "morgan": "~1.6.1",
+    "es6-promise": "~3.0.2",
+    "express": "~4.0.0",
     "jsonwebtoken": "~5.4.0",
-    "path": "~0.12.7",
+    "mongoose": "~3.6.13",
+    "morgan": "~1.6.1",
     "password-hash-and-salt": "~0.1.2",
-    "es6-promise": "~3.0.2"
+    "path": "~0.12.7",
+    "pluralize": "^1.2.1"
   }
 }

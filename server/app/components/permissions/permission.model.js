@@ -103,6 +103,14 @@ function Compile(permissions) {
 
 
     function hasModel(item, model) {
+        // Turn model to a real RegExp if it looks like one
+        if (TypeOf(model) === 'String' && model[0] === '/') {
+            var parts = model.match(/\/([^\/]+)\/([gimy]*)/);
+            if (! parts) {
+                throw new Error('Expected a model name or a regular expression. "' + model + '" given instead.');
+            }
+            model = new RegExp(parts[1], parts[2]);
+        }
         return item.constructor.modelName.replace(model, '') === '';
     }
 
