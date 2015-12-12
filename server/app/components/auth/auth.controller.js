@@ -2,10 +2,10 @@
 
 var Extend = require('util')._extend;
 var jsonWT = require('jsonwebtoken');
-var User = require(global.absPath + '/app/components/users/user.model');
-var Hash = require(global.absPath + '/app/components/auth/hash');
-var config = require(global.absPath + '/app/config');
-var stuff = require(global.absPath + '/app/shared/stuff');
+var User = require(absPath + '/app/components/users/user.model');
+var Hash = require(absPath + '/app/components/auth/hash');
+var config = require(absPath + '/app/config');
+var stuff = require(absPath + '/app/shared/stuff');
 
 var self = {
     VerifyCredentials: VerifyCredentials,

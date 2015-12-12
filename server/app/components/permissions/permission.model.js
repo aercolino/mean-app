@@ -5,9 +5,9 @@
 // TODO: allow definitions to say that a permission denies action to matching actors, example: 'HandcuffedPeople CANTedit TheirStuff'
 
 var Promise = require('es6-promise').Promise;
-var TypeOf  = require(global.absPath + '/app/shared/stuff').TypeOf;
-var Apply   = require(global.absPath + '/app/shared/stuff').Apply;
-var Find    = require(global.absPath + '/app/shared/stuff').ArrayFind;
+var TypeOf  = require(absPath + '/app/shared/stuff').TypeOf;
+var Apply   = require(absPath + '/app/shared/stuff').Apply;
+var Find    = require(absPath + '/app/shared/stuff').ArrayFind;
 var Extend  = require('util')._extend;
 
 var source = require('./permissions');
@@ -175,7 +175,7 @@ function Compile(permissions) {
                 var err = 'role "' + name + '" must not be defined';
                 throw Error(err);
             }
-            var Role = require(global.absPath + '/app/components/roles/role.model');
+            var Role = require(absPath + '/app/components/roles/role.model');
             Role.findOne({name: name}, function (err, role) {
                 if (err) {
                     return reject(Error(err));

@@ -218,7 +218,7 @@ function RequireComponent(type, name) {
         var Pluralize = require('pluralize');
         var prefix = name.toLowerCase();
         var folder = Pluralize(prefix);
-        var path = global.absPath + '/app/components/' + folder + '/' + prefix + '.' + type;
+        var path = absPath + '/app/components/' + folder + '/' + prefix + '.' + type;
         var result = require(path);
     } catch (e) {
         log.error(ErrorMessage(e));

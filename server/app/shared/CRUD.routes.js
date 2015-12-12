@@ -6,10 +6,10 @@ function CRUD_Routes(controller) {
     var Express = require('express');
     var router = Express.Router();
 
-    if (global.skipAuth) {
+    if (skipAuth) {
         console.log('Skipping authentication...');
     } else {
-        var auth = require(global.absPath + '/app/components/auth/auth.controller');
+        var auth = require(absPath + '/app/components/auth/auth.controller');
         router.use(auth.VerifyToken);  // All routes after this line are authenticated.
     }
 

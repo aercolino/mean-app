@@ -3,7 +3,7 @@
 var fields = ['name'];
 
 var Item = require('./bear.model');
-var Controller = require(global.absPath + '/app/shared/CRUD.controller');
+var Controller = require(absPath + '/app/shared/CRUD.controller');
 var self = Controller(Item, fields);
 module.exports = self;
 
