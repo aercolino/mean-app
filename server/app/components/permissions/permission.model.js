@@ -2,7 +2,7 @@
 
 // TODO: allow definitions to say that a permission is to be checked at a given priority
 // TODO: allow definitions to say that a permission is the last one to be checked before giving up
-// TODO: allow definitions to say that a permission denies action to matching actors, example: 'BlacklistedPeople CANTedit TheirStuff'
+// TODO: allow definitions to say that a permission denies action to matching actors, example: 'HandcuffedPeople CANTedit TheirStuff'
 
 var Promise = require('es6-promise').Promise;
 var TypeOf  = require(global.absPath + '/app/shared/stuff').TypeOf;
@@ -60,18 +60,21 @@ function Compile(permissions) {
                     Promise
                     .resolve(that.action.matches(action))
                     .then(function (actionsMatch) {
+                        log.debug('Permission ' + that.name + ': actions' + (actionsMatch ? '' : " don't") + ' match');
                         if (! actionsMatch) {
                             return false;
                         }
                         return that.subject.matches(subject, object);
                     })
                     .then(function (subjectsMatch) {
+                        log.debug('Permission ' + that.name + ': subjects' + (subjectsMatch ? '' : " don't") + ' match');
                         if (! subjectsMatch) {
                             return false;
                         }
                         return that.object.matches(subject, object);
                     })
                     .then(function (objectsMatch) {
+                        log.debug('Permission ' + that.name + ': objects' + (objectsMatch ? '' : " don't") + ' match');
                         resolve(objectsMatch ? that : false);
                     })
                     .catch(function (err) {
@@ -319,7 +322,6 @@ function Can(subject, action, object, callback) {
         .concat(priority['4']);
 
     var promise = Find(ps, function (p) {
-        console.log(p);
         return p.matches(subject, action, object);
     });
 

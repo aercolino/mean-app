@@ -31,6 +31,12 @@ function TypeOf(value) {
 
 
 
+function ErrorMessage(error, ignoreStack) {
+    return error && (!ignoreStack && error.stack || error.message || error.err || error) || null;
+}
+
+
+
 function IsPromise(object) {
     var result = object.then && typeof object.then == 'function';
     return result;
@@ -41,7 +47,7 @@ function IsPromise(object) {
 function Failure(error) {
     return {
         success: false,
-        message: typeof error == 'string' ? error : (error.err || error.message || error || null)
+        message: ErrorMessage(error, true)
     };
 }
 
@@ -207,21 +213,6 @@ function MorganFactory() {
 
 
 
-function DumpError(err) {
-    try {
-        if (err.stack) {
-            return console.log(err.stack);
-        }
-        if (err.message) {
-            return console.log(err.message)
-        }
-    } catch (e) {
-        return console.log(err);
-    }
-}
-
-
-
 function RequireComponent(type, name) {
     try {
         var Pluralize = require('pluralize');
@@ -230,7 +221,7 @@ function RequireComponent(type, name) {
         var path = global.absPath + '/app/components/' + folder + '/' + prefix + '.' + type;
         var result = require(path);
     } catch (e) {
-        DumpError(e);
+        log.error(ErrorMessage(e));
         var result = undefined;
     }
     return result;
@@ -246,6 +237,14 @@ function Apply(functionName, context, args) {
     if (arguments.length == 2) {
         args = context;
         context = global;
+    }
+    log.debug('Applying ' + functionName + '(' + args[0].constructor.modelName + ':' + args[0].id + ', ' + args[1].constructor.modelName + ':' + args[1].id + ')');
+    if (context === global) {
+        log.debug('-- using the global context');
+    } else {
+        log.debug('-- using the context (start)');
+        log.debug(context);
+        log.debug('-- using the context (end)');
     }
     var namespaces = functionName.split(".");
     var func = namespaces.pop();

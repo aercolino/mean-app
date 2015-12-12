@@ -6,6 +6,7 @@
     "es6-promise": "~3.0.2",
     "express": "~4.0.0",
     "jsonwebtoken": "~5.4.0",
+    "loglevel": "^1.4.0",
     "mongoose": "~3.6.13",
     "morgan": "~1.6.1",
     "password-hash-and-salt": "~0.1.2",

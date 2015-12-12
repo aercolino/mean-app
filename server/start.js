@@ -5,6 +5,10 @@
 
 global.skipAuth = !true;
 global.absPath = __dirname;
+
+global.log = require('loglevel');
+log.setLevel(log.levels.DEBUG);
+
 var port = process.env.PORT || 8080;
 
 var Express = require('express');

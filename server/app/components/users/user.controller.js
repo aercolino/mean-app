@@ -31,7 +31,7 @@ self.AllowUpdate = function (item, req) {
     return Can(req.currentUser, 'edit', item)
         .then(function (allowed) {
             if (allowed) {
-                console.log('%s can edit %s %s because %s', req.currentUser.name, item.constructor.modelName, item.id, allowed.name);
+                log.info('%s can edit %s %s because %s', req.currentUser.name, item.constructor.modelName, item.id, allowed.name);
             }
             return allowed;
         });

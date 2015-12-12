@@ -44,7 +44,7 @@ function CRUD_Controller(Item, fields) {
                 case 'function':
                     var matches = String(field).match(/^function\s*\(\s*(\w+)\s*\)/);
                     if (!(matches && matches[1])) {
-                        console.log('Expected a function with only one argument.');
+                        log.warn('Expected a function with only one argument.');
                         return;
                     }
                     result = data[matches[1]] ? {
