@@ -74,11 +74,11 @@ module.exports = {
     // Notice that in this case 
     // -- a match-all RegExp for the action and the object makes this permission quite generic.
 
-    'anyAdmin canDo everything': {
-        anyAdmin: {
+    'anAdmin canDo everything': {
+        anAdmin: {
             model: 'User',
-            restriction: function (anyAdmin) {
-                return anyAdmin.isAdmin();
+            restriction: function (user) {
+                return user.isAdmin();
             }
         },
         canDo: /.*/,
