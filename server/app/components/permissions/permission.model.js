@@ -135,7 +135,7 @@ function Compile(permissions) {
                     case 'RegExp':
                     break;
                     default:
-                        errorMessage = 'type of model of item "' + itemName + '" must be String or RegExp';
+                        errorMessage = 'Type of model of item "' + itemName + '" must be String or RegExp.';
                     break;
                 }
                 switch (TypeOf(descriptor.restriction)) {
@@ -143,12 +143,12 @@ function Compile(permissions) {
                     case 'Function':
                     break;
                     default:
-                        errorMessage = 'type of restriction of item "' + itemName + '" must be undefined or Function';
+                        errorMessage = 'Type of restriction of item "' + itemName + '" must be undefined or Function.';
                     break;
                 }
             break;
             default:
-                errorMessage = 'type of item "' + itemName + '" must be Object, String, or RegExp';
+                errorMessage = 'Type of item "' + itemName + '" must be Object, String, or RegExp.';
             break;
         }
         if (errorMessage) {
@@ -172,7 +172,7 @@ function Compile(permissions) {
         return new Promise(function (resolve, reject) {
             var descriptor = permissionValue[roleName];
             if (descriptor) {
-                var errorMessage = 'role "' + roleName + '" must not be defined';
+                var errorMessage = 'Role "' + roleName + '" cannot be defined in a permission.';
                 throw new Error(errorMessage);
             }
             var Role = require(absPath + '/app/components/roles/role.model');
@@ -280,7 +280,7 @@ function Compile(permissions) {
                 };
             break;
             default:
-                errorMessage = 'type of action "' + actionName + '" must be undefined or RegExp';
+                errorMessage = 'Type of action "' + actionName + '" must be undefined or RegExp.';
             break;
         }
         if (errorMessage) {
