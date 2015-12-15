@@ -313,10 +313,7 @@ function DefineError(name, ParentError) {
     function Init(message) {
         this.name = name;
         this.message = message;
-        this.stack = CleanStack(message);
-    }
-    function CleanStack(message) {
-        return (new Error()).stack.replace(prefix, name + ': ' + message);
+        this.stack = (new Error()).stack.replace(prefix, name + ': ' + message);
     }
 }
 
