@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     // This is an example of permission using roles for the subject and the object.
 

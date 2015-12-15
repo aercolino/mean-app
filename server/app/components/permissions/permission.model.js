@@ -337,5 +337,3 @@ function Can(subject, action, object, callback) {
 
     return promise;
 }
-
-

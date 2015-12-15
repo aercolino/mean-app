@@ -26,8 +26,7 @@ app.use(Morgan(':date[iso] :current-user[colored] :method :url :status[colored] 
 var mongoose = require('mongoose');
 mongoose.connect(config.database);
 
-var permissions = require('./app/components/permissions/permission.model');
-global.Can = permissions.Can;
+global.Can = require('./app/components/permissions/permission.model').Can;
 
 app.get('/', function(req, res) {
     res.send('Hello! The API is at http://localhost:' + port + '/api');
