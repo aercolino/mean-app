@@ -305,9 +305,9 @@ function DefineError(name, ParentError) {
     var Func = eval('(function ' + name + '(message) { Init.call(this, message); })');
     Func.prototype = Object.create(ParentError.prototype);
     Func.prototype.constructor = Func;
-    var global = window || global;
-    if (global) {
-        global[name] = Func;
+    var context = window || global;
+    if (context) {
+        context[name] = Func;
     }
     return;
     function Init(message) {
