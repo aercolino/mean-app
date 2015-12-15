@@ -290,7 +290,7 @@ function ArrayFind(array, Predicate, thisArg) {
 }
 
 
-
+// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 function DefineError(name, ParentError) {
     if (name.replace(/^[A-Za-z_]\w+$/, '') !== '') {
         throw new Error('The error name must be a valid function name.');
@@ -301,6 +301,7 @@ function DefineError(name, ParentError) {
         }
         ParentError = Error;
     }
+
     var prefix = new RegExp('^(?:.|\\n)+\\n\\s+at new ' + name + ' .*', '');
     var Func = eval('(function ' + name + '(message) { Init.call(this, message); })');
     Func.prototype = Object.create(ParentError.prototype);
@@ -310,6 +311,7 @@ function DefineError(name, ParentError) {
         context[name] = Func;
     }
     return;
+
     function Init(message) {
         this.name = name;
         this.message = message;
