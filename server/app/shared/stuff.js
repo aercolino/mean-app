@@ -11,7 +11,8 @@ var self = {
     color: ColorFactory(),
     Apply: Apply,
     TypeOf: TypeOf,
-    ArrayFind: ArrayFind
+    ArrayFind: ArrayFind,
+    DefineError: DefineError
 };
 
 module.exports = self;
@@ -288,4 +289,34 @@ function ArrayFind(array, Predicate, thisArg) {
         });
 }
 
+
+
+function DefineError(name, ParentError) {
+    if (name.replace(/^[A-Za-z_]\w+$/, '') !== '') {
+        throw new Error('The error name must be a valid function name.');
+    }
+    if (typeof ParentError !== 'function') {
+        if (typeof ParentError !== 'undefined') {
+            throw new Error('The error parent must be undefined (which defaults to Error) or a valid Error constructor.');
+        }
+        ParentError = Error;
+    }
+    var prefix = new RegExp('^(?:.|\\n)+\\n\\s+at new ' + name + ' .*', '');
+    var Func = eval('(function ' + name + '(message) { Init.call(this, message); })');
+    Func.prototype = Object.create(ParentError.prototype);
+    Func.prototype.constructor = Func;
+    var global = window || global;
+    if (global) {
+        global[name] = Func;
+    }
+    return;
+    function Init(message) {
+        this.name = name;
+        this.message = message;
+        this.stack = CleanStack(message);
+    }
+    function CleanStack(message) {
+        return (new Error()).stack.replace(prefix, name + ': ' + message);
+    }
+}
 
