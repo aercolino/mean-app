@@ -42,9 +42,9 @@ function Compile(permissions) {
 
         Promise.all([
 
-            normalizeActor(permission.subject.name, permissions[name]),
-            normalizeAction(permission.action.name, permissions[name]),
-            normalizeActor(permission.object.name,  permissions[name])
+            CompileActor(permission.subject.name, permissions[name]),
+            CompileAction(permission.action.name, permissions[name]),
+            CompileActor(permission.object.name,  permissions[name])
 
         ]).then(function(defs) {
 
@@ -77,8 +77,8 @@ function Compile(permissions) {
                         log.debug('Permission ' + that.name + ': objects' + (objectsMatch ? '' : " don't") + ' match');
                         resolve(objectsMatch ? that : false);
                     })
-                    .catch(function (err) {
-                        reject(err);
+                    .catch(function (error) {
+                        reject(error instanceof Error ? error : new Error(error));
                     });
 
                 });
@@ -105,104 +105,104 @@ function Compile(permissions) {
 
 
 
-    function hasModel(item, model) {
-        // Turn model to a real RegExp if it looks like one
-        if (TypeOf(model) === 'String' && model[0] === '/') {
-            var parts = model.match(/\/([^\/]+)\/([gimy]*)/);
+    function HasModel(item, modelName) {
+        // Turn modelName to a real RegExp if it looks like one
+        if (TypeOf(modelName) === 'String' && modelName[0] === '/') {
+            var parts = modelName.match(/\/([^\/]+)\/([gimy]*)/);
             if (! parts) {
-                throw new Error('Expected a model name or a regular expression. "' + model + '" given instead.');
+                throw new Error('Expected a model name or a regular expression. "' + modelName + '" given instead.');
             }
-            model = new RegExp(parts[1], parts[2]);
+            modelName = new RegExp(parts[1], parts[2]);
         }
-        return item.constructor.modelName.replace(model, '') === '';
+        return item.constructor.modelName.replace(modelName, '') === '';
     }
 
 
 
-    function normalizeActorItem(name, definition) {
-        var def = definition[name];
-        var err = '';
-        switch (TypeOf(def)) {
+    function CompileItem(itemName, permissionValue) {
+        var descriptor = permissionValue[itemName];
+        var errorMessage = '';
+        switch (TypeOf(descriptor)) {
             case 'String':
             case 'RegExp':
-                def = {
-                    model: def,
+                descriptor = {
+                    model: descriptor,
                 };
             break;
             case 'Object':
-                switch (TypeOf(def.model)) {
+                switch (TypeOf(descriptor.model)) {
                     case 'String':
                     case 'RegExp':
                     break;
                     default:
-                        err = 'type of model of item "' + name + '" must be String or RegExp';
+                        errorMessage = 'type of model of item "' + itemName + '" must be String or RegExp';
                     break;
                 }
-                switch (TypeOf(def.restriction)) {
+                switch (TypeOf(descriptor.restriction)) {
                     case 'undefined':
                     case 'Function':
                     break;
                     default:
-                        err = 'type of restriction of item "' + name + '" must be undefined or Function';
+                        errorMessage = 'type of restriction of item "' + itemName + '" must be undefined or Function';
                     break;
                 }
             break;
             default:
-                err = 'type of item "' + name + '" must be Object, String, or RegExp';
+                errorMessage = 'type of item "' + itemName + '" must be Object, String, or RegExp';
             break;
         }
-        if (err) {
-            throw Error(err);
+        if (errorMessage) {
+            throw new Error(errorMessage);
         }
-        def.complexity = def.restriction ? 1 : 0;
-        def.matches = function (subject, object) {
+        descriptor.complexity = descriptor.restriction ? 1 : 0;
+        descriptor.matches = function (subject, object) {
             var item = this.actor == 'subject' ? subject : object;
-            if (! hasModel(item, this.model)) {
+            if (! HasModel(item, this.model)) {
                 return false;
             }
             var result = ! this.restriction || this.restriction(subject, object);
             return result;
         };
-        return def;
+        return descriptor;
     }
 
 
 
-    function normalizeActorRole(name, definition) {
+    function CompileRole(roleName, permissionValue) {
         return new Promise(function (resolve, reject) {
-            var def = definition[name];
-            if (def) {
-                var err = 'role "' + name + '" must not be defined';
-                throw Error(err);
+            var descriptor = permissionValue[roleName];
+            if (descriptor) {
+                var errorMessage = 'role "' + roleName + '" must not be defined';
+                throw new Error(errorMessage);
             }
             var Role = require(absPath + '/app/components/roles/role.model');
-            Role.findOne({name: name}, function (err, role) {
-                if (err) {
-                    return reject(Error(err));
+            Role.findOne({name: roleName}, function (error, role) {
+                if (error) {
+                    return reject(error instanceof Error ? error : new Error(error));
                 }
                 if (! role) {
-                    return reject('No role "' + name + '" found.');
+                    return reject(new Error('No role "' + roleName + '" found.'));
                 }
-                def = {
+                descriptor = {
                     model: role.model
                 };
                 switch (TypeOf(role.restriction)) {
                     case 'Object':
-                        def.complexity = 2;
-                        def.matches = function (subject, object) {
+                        descriptor.complexity = 2;
+                        descriptor.matches = function (subject, object) {
                             return new Promise(function (resolve, reject) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.model)) {
+                                if (! HasModel(item, this.model)) {
                                     return false;
                                 }
                                 var criteria = Extend(role.restriction, {id: item.id});
                                 var Item = item.collection;
                                 Item.count(criteria, function(error, result) {
                                     if (error) {
-                                        return reject(Error(error));
+                                        return reject(error instanceof Error ? error : new Error(error));
                                     }
                                     if (result > 1) {
-                                        return reject(Error('Data Corruption: id:' + item.id + ' identifies ' + result + ' documents.'));
+                                        return reject(new Error('Data Corruption: id:' + item.id + ' identifies ' + result + ' documents.'));
                                     }
                                     resolve(result === 1);
                                 });
@@ -210,10 +210,10 @@ function Compile(permissions) {
                         };
                     break;
                     case 'String':
-                        def.complexity = 1;
-                        def.matches = function (subject, object) {
+                        descriptor.complexity = 1;
+                        descriptor.matches = function (subject, object) {
                             var item = this.actor == 'subject' ? subject : object;
-                            if (! hasModel(item, this.model)) {
+                            if (! HasModel(item, this.model)) {
                                 return false;
                             }
                             var result = !!Apply(role.restriction, [subject, object]);
@@ -221,19 +221,19 @@ function Compile(permissions) {
                         };
                     break;
                     default:
-                        def.complexity = 0;
+                        descriptor.complexity = 0;
                         if (role.restriction) {
-                            def.matches = function (subject, object) {
+                            descriptor.matches = function (subject, object) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.model)) {
+                                if (! HasModel(item, this.model)) {
                                     return false;
                                 }
                                 return true;
                             };
                         } else {
-                            def.matches = function (subject, object) {
+                            descriptor.matches = function (subject, object) {
                                 var item = this.actor == 'subject' ? subject : object;
-                                if (! hasModel(item, this.model)) {
+                                if (! HasModel(item, this.model)) {
                                     return false;
                                 }
                                 var result = TypeOf(item.roles) == 'Array' && item.roles.indexOf(role.name) > -1;
@@ -242,54 +242,54 @@ function Compile(permissions) {
                         }
                     break;
                 }
-                resolve(def);
+                resolve(descriptor);
             });
         });
     }
 
 
 
-    function normalizeActor(name, definition) {
-        var kind = name.search(/^[a-z]/) === 0 ? 'item' : 'role';
-        var def;
+    function CompileActor(actorName, permissionValue) {
+        var kind = actorName.search(/^[a-z]/) === 0 ? 'item' : 'role';
+        var descriptor;
         switch (kind) {
             case 'item':  // final
-                def = normalizeActorItem(name, definition);
+                descriptor = CompileItem(actorName, permissionValue);
             break;
             case 'role':  // promise
-                def = normalizeActorRole(name, definition);
+                descriptor = CompileRole(actorName, permissionValue);
             break;
         }
-        return def;
+        return descriptor;
     }
 
 
 
-    function normalizeAction(name, definition) {
-        var def = definition[name];
-        var err = '';
-        switch (TypeOf(def)) {
+    function CompileAction(actionName, permissionValue) {
+        var descriptor = permissionValue[actionName];
+        var errorMessage = '';
+        switch (TypeOf(descriptor)) {
             case 'undefined':
-                def = {
-                    value: name
+                descriptor = {
+                    value: actionName
                 };
             break;
             case 'RegExp':
-                def = {
-                    value: def
+                descriptor = {
+                    value: descriptor
                 };
             break;
             default:
-                err = 'type of action "' + name + '" must be undefined or RegExp';
+                errorMessage = 'type of action "' + actionName + '" must be undefined or RegExp';
             break;
         }
-        if (err) {
-            throw Error(err);
+        if (errorMessage) {
+            throw new Error(errorMessage);
         }
-        def.matches = function (action) {
+        descriptor.matches = function (action) {
             return action.replace(this.value, '') === '';
         };
-        return def;
+        return descriptor;
     }
 
 };
@@ -331,7 +331,7 @@ function Can(subject, action, object, callback) {
                 callback(undefined, p);
             })
             .catch(function (error) {
-                callback(error);
+                callback(error instanceof Error ? error : new Error(error));
             });
     }
 
