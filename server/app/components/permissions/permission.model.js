@@ -76,7 +76,7 @@ function Compile(permissions) {
                     })
                     .then(function (objectsMatch) {
                         log.debug('Permission "' + that.name + '": objects' + (objectsMatch ? '' : " don't") + ' match');
-                        resolve(objectsMatch ? that : false);
+                        resolve(objectsMatch ? that.name : false);
                     })
                     .catch(function (error) {
                         reject(error instanceof Error ? error : new Error(error));
