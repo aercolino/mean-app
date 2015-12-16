@@ -1,9 +1,9 @@
 'use strict';
 
-// TODO: review error management
-// TODO: allow definitions to say that a permission is to be checked at a given priority
-// TODO: allow definitions to say that a permission is the last one to be checked before giving up
-// TODO: allow definitions to say that a permission denies action to matching actors, example: 'HandcuffedPeople CANTedit TheirStuff'
+// TODO: review error management, maybe creating Errors with stuff.DefineError
+// TODO: add support for setting a custom priority at which to check a permission
+// TODO: add support for breaking out of the chain of permissions to check
+// TODO: add support for negation like: 'HandcuffedPeople CANTedit TheirStuff'
 
 var Promise = require('es6-promise').Promise;
 var TypeOf  = require(absPath + '/app/shared/stuff').TypeOf;
