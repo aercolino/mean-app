@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: review error management
 // TODO: allow definitions to say that a permission is to be checked at a given priority
 // TODO: allow definitions to say that a permission is the last one to be checked before giving up
 // TODO: allow definitions to say that a permission denies action to matching actors, example: 'HandcuffedPeople CANTedit TheirStuff'
@@ -60,21 +61,21 @@ function Compile(permissions) {
                     Promise
                     .resolve(that.action.matches(action))
                     .then(function (actionsMatch) {
-                        log.debug('Permission ' + that.name + ': actions' + (actionsMatch ? '' : " don't") + ' match');
+                        log.debug('Permission "' + that.name + '": actions' + (actionsMatch ? '' : " don't") + ' match');
                         if (! actionsMatch) {
                             return false;
                         }
                         return that.subject.matches(subject, object);
                     })
                     .then(function (subjectsMatch) {
-                        log.debug('Permission ' + that.name + ': subjects' + (subjectsMatch ? '' : " don't") + ' match');
+                        log.debug('Permission "' + that.name + '": subjects' + (subjectsMatch ? '' : " don't") + ' match');
                         if (! subjectsMatch) {
                             return false;
                         }
                         return that.object.matches(subject, object);
                     })
                     .then(function (objectsMatch) {
-                        log.debug('Permission ' + that.name + ': objects' + (objectsMatch ? '' : " don't") + ' match');
+                        log.debug('Permission "' + that.name + '": objects' + (objectsMatch ? '' : " don't") + ' match');
                         resolve(objectsMatch ? that : false);
                     })
                     .catch(function (error) {
