@@ -158,7 +158,7 @@ function CRUD_Controller(Item, fields) {
                             return stuff.SendFailure(res, error, 'Bad Request');
                         }
 
-                        stuff.SendSuccess(res, null, Item.modelName + ' updated!');
+                        return stuff.SendSuccess(res, null, Item.modelName + ' updated!');
 
                     });
 
@@ -168,12 +168,11 @@ function CRUD_Controller(Item, fields) {
             if (self.AllowUpdate) {
                 Promise.resolve(self.AllowUpdate(item, req))
                     .then(function (allowed) {
-                        if (allowed) {
-                            UpdateItem();
-                        } else {
+                        if (! allowed) {
                             var error = req.currentUser.name + ' cannot update ' + item.constructor.modelName + ' ' + item.id;
-                            stuff.SendFailure(res, error, 'Unauthorized');
+                            return stuff.SendFailure(res, error, 'Unauthorized');
                         }
+                        UpdateItem();
                     })
                     .catch(function (error) {
                         return stuff.SendFailure(res, error, 'Bad Request');
