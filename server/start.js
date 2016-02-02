@@ -11,14 +11,18 @@ log.setLevel(log.levels.DEBUG);
 
 var port = process.env.PORT || 8080;
 
+var config = require('./app/config');
+
 var Express = require('express');
 var app     = Express();
 
-var config = require('./app/config');
+var MethodOverride = require('method-override');
+app.use(MethodOverride());
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 var Morgan = require('./app/shared/stuff').Morgan;
 app.use(Morgan(':date[iso] :current-user[colored] :method :url :status[colored] :response-time ms - :res[content-length] bytes'));
