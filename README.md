@@ -38,7 +38,8 @@ Instanbul
 
     $ cd server
     $ npm install
-    $ node start
+    $ npm install -g nodemon
+    $ nodemon start
 
 
 ## Server API
