@@ -63,14 +63,14 @@
                     throw 'Expected a path for the component.';
                 }
 
-// TODO find where to get the current app from, because $route is undefined here
-                // if (result.app && (result.app != $route.current.app)) {
-                //     return redirectTo('/apps/' + result.app);
-                // }
+                var appName = result.app;
+                if (appName && MyProject.appName !== appName) {
+                    return redirectTo('/apps/' + appName);
+                }
 
                 if (result.path[0] == '/') {
                     // expecting a path relative to /apps/<app>
-                    result.path = '/apps/' + result.app + result.path;
+                    result.path = '/apps/' + appName + result.path;
                 } else {
                     // expecting a path relative to /apps/<app>/components
                     if (result.path.search('/') > 0) {
@@ -81,7 +81,7 @@
                         // double the path
                         result.path += '/' + result.path;
                     }
-                    result.path = '/apps/' + result.app + '/components/' + result.path;
+                    result.path = '/apps/' + appName + '/components/' + result.path;
                 }
                 
                 var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
@@ -97,16 +97,14 @@
                     result
                 );
 
-                var app = result.app;
                 var dependencies = result.controller ? [result.path + '.js'] : [];
                 result.resolve = {
                     load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
-                        if ($route.current.app && $route.current.app === app) {
+                        if (appName && MyProject.appName === appName) {
                             // we are going to a route inside the SPA we are into
                             return resolveDependencies($q, $rootScope, dependencies);
                         } else {
-                            // we are going to a route outside the SPA we are into
-                            return redirectTo('/apps/' + app);
+                            // this should not happen...
                         }
                     }]
                 };

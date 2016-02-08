@@ -1,7 +1,7 @@
 (function() {
 
     'use strict';
-    MyProject.appName = 'auth';
+    MyProject.appName = 'core';
 
     // this initial piece of configuration makes it possible to require modules later
     // ---------------------------------------------------------------------------------------------------------- start

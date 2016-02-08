@@ -1,18 +1,19 @@
 (function(global) {
 
-    var appName = 'app';
+    // var appName = 'app';
     var useCurrentFolder = /^\.\//;
     var register = null;
 
     global.MyProject = {
+        appName: 'app',
         currentUser: currentUser,
         uniqueUrl: uniqueUrl,
         registerSetup: registerSetup,
         codeSetup: codeSetup
     };
-    Object.defineProperty(global.MyProject, 'appName', {
-        value: appName
-    });
+    // Object.defineProperty(global.MyProject, 'appName', {
+    //     value: appName
+    // });
 
     return;
 
@@ -131,7 +132,7 @@
                 register[my.type](my.name, runner);
             } else {
                 // this allows to register stuff before the bootstrap
-                angular.module(appName)[my.type](my.name, runner);
+                angular.module(MyProject.appName)[my.type](my.name, runner);
             }
         });
     }
