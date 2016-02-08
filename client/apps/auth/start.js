@@ -92,7 +92,7 @@
                     authenticationService.check(token, function(response) {
                         if (!response.error) {
                             if (response) {
-                                $http.defaults.headers.common['X-Auth-Token'] = token; // jshint ignore:line
+                                $http.defaults.headers.common['x-access-token'] = token; // jshint ignore:line
                             } else {
                                 $location.path('/login');
                             }
