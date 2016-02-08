@@ -6,6 +6,7 @@
     "es6-promise": "~3.0.2",
     "express": "~4.0.0",
     "jsonwebtoken": "~5.4.0",
+    "lodash": "^4.3.0",
     "loglevel": "^1.4.0",
     "method-override": "^2.3.5",
     "mongoose": "~3.6.13",
