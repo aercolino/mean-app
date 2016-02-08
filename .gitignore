@@ -3,5 +3,7 @@
 node_modules/
 bower_components/
 
-client/
 tmp/
+client/shared/themes/
+client/apps/core/shared/themes/
+client/apps/core/
