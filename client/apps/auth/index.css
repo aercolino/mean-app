@@ -1,0 +1,41 @@
+
+html {
+  height: 100%;
+}
+
+html body {
+  height: 100%;
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+html body .container-fluid.body-content {
+  position: absolute;
+  top: 60px;
+  bottom: 30px;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: #EEE;
+    height: 60px;
+}
+
+footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #EEE;
+    height: 30px;
+}
+
+.flash-message {
+    margin-top: 20px;
+}

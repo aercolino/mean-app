@@ -1,0 +1,39 @@
+
+
+TOKEN
+-----
+to get it: angular.element(document.body).injector().get('storageService').getItem('globals').currentUser.authdata
+to remove it: chrome://settings/cookies#cont
+
+===============================================================================
+
+
+Controller / View
+-----------------
+There are two ways of binding a controller's "this" (can be any object) to a view.
+For example, let's use "vm" for the alias, standing for view-model.
+
+See https://docs.angularjs.org/api/ng/directive/ngController
+
+
+1st way: automatic (using the alias specified in the route or directive)
+-------------------------------------------------------------------------------
+In the controller
+-1- do not inject $scope (unless it is needed for accessing other controllers)
+-2- do not set my.$scope.vm to the "this" of the controller but return it
+
+In the routes.js (a) or the directive (b), bind the controller with an alias
+-a- .when('/login', route.forComponent('authenticator/login as vm'))
+-b- ng-controller="loginController as vm"
+
+
+2nd way: manual (using the alias specified in the controller)
+-------------------------------------------------------------------------------
+In the controller
+-1- inject $scope
+-2- set my.$scope.vm to the "this" of the controller but do not return the "this"
+
+In the routes.js (a) or the directive (b), do not bind the controller with an alias
+-a- .when('/login', route.forComponent('authenticator/login'))
+-b- ng-controller="loginController"
+

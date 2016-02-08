@@ -1,0 +1,38 @@
+{
+  "name": "MyProject",
+  "homepage": "https://github.com/aercolino/mean-app",
+  "authors": [
+    "Andrea Ercolino <cappuccino.e.cornetto@gmail.com>"
+  ],
+  "description": "MEAN App, my way",
+  "main": "start",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "MEAN",
+    "client"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "es5-shim": "~4.4.1",
+    "es6-shim": "~0.34.1",
+    "requirejs": "~2.1.22",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.2.0",
+    "angular": "~1.4.9",
+    "angular-animate": "~1.4.9",
+    "angular-bootstrap": "~1.1.0",
+    "angular-messages": "~1.4.9",
+    "angular-resource": "~1.4.9",
+    "angular-route": "~1.4.9"
+  }
+}

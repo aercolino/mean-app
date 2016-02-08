@@ -1,0 +1,46 @@
+Client Structure
+
+based on 
+- https://scotch.io/tutorials/angularjs-best-practices-directory-structure
+- https://github.com/johnpapa/angular-styleguide
+- http://jasonwatmore.com/post/2015/03/10/AngularJS-User-Registration-and-Login-Example.aspx
+- http://weblogs.asp.net/dwahlin/dynamically-loading-controllers-and-views-with-angularjs-and-requirejs
+- https://github.com/DanWahlin/CustomerManager
+
+
+client/
+  apps/
+    auth/
+      components/
+        login/
+          login.html
+          login.js
+        register/
+          register.html
+          register.js
+      shared/
+        layout/
+        config.js
+      start.js
+    core/
+      components/
+        bears/
+        users/
+      shared/
+        layout/
+        services/
+        config.js
+      start.js
+  bower_components/
+  docs/
+  drafts/
+  shared/
+    modules/
+    services/
+      authentication.service.js
+      base64.service.js
+      flash.service.js
+      storage.service.js
+    themes/
+    my-project.js
+    routes.js
