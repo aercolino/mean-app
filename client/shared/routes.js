@@ -26,6 +26,8 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
 
             .when('/register',              route.forComponent('auth: register as vm'))
 
+            .when('/reset-password',        route.forComponent('auth: reset-password as vm'))
+
 
             .when('/',                      route.forComponent({
                                                 app: 'core',
@@ -41,7 +43,9 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
 
         .otherwise({
             redirectTo: function(params, path, search) {
-                console.log('attempted redirect: ' + {params: params, path: path, search: search});
+                debugger;
+                console.log('attempted redirect: ');
+                console.log({params: params, path: path, search: search});
                 $window.location.href = '/auth/#/login';
                 return; // do not return a string !
             }
