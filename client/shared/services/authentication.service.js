@@ -48,7 +48,7 @@
 
         function check(token, callback) {
             my.$http
-                .get(my.config.urlSecurityService + '/authn/check/' + token)
+                .get('/api/tokens/' + token)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
