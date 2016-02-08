@@ -51,7 +51,7 @@
             function forComponent(path, options) {
                 var matches = [];
                 var result = {};
-                if (jQuery.isPlainObject(path)) {
+                if (_.isPlainObject(path)) {
                     result = path;
                 } else {
                     var simplified = path.replace(/^\s+|\s+$/, '').replace(/\s+/, ' ').replace(/ ?: ?/, ':');
@@ -85,11 +85,11 @@
                 }
                 
                 var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
-                result = jQuery.extend(
+                result = _.extend(
                     match(result.path, formatPathToFile, ['', '', 'name']),
                     result
                 );
-                result = jQuery.extend(
+                result = _.extend(
                     {
                         templateUrl: result.path + '.html',
                         controller: _.camelCase(result.name) + 'Controller'
