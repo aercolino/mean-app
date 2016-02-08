@@ -43,10 +43,8 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
 
         .otherwise({
             redirectTo: function(params, path, search) {
-                debugger;
-                console.log('attempted redirect: ');
-                console.log({params: params, path: path, search: search});
-                $window.location.href = '/auth/#/login';
+                console.log('otherwise...');
+                window.location.href = '/core/#/';
                 return; // do not return a string !
             }
         });
