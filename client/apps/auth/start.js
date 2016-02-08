@@ -41,10 +41,8 @@
         '/shared/services/authentication.service.js',  // for checking user credentials
         '/shared/services/flash.service.js',           // for giving feedback to the user
 
-        '/shared/routes.js',
-        '/shared/modules/my-layout.js',
-
-        '/apps/auth/shared/config.js',
+        '/shared/config.js',
+        '/shared/routes.js'
     ],
 
     /* beautify preserve:end */
