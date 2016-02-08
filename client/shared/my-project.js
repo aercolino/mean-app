@@ -86,7 +86,7 @@
         if (!(my.name !== '')) {
             throw 'Expected an identifier into the "name" option.';
         }
-        if (!(_.inArray(my.type, ['controller', 'directive', 'factory', 'filter', 'service']) >= 0)) {
+        if (!(_.indexOf(['controller', 'directive', 'factory', 'filter', 'service'], my.type) >= 0)) {
             throw 'Expected a supported type into the "type" option. (' + my.type + ')';
         }
         if (!_.isArray(my.services)) {
