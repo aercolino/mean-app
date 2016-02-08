@@ -9,6 +9,7 @@
 
     angular
         .module('myRoute', [])
+        .constant('_', window._)
         .provider('route', provider); // 'route' is seen outside as 'routeProvider'
 
     function provider() {
@@ -48,7 +49,6 @@
             }
 
             function forComponent(path, options) {
-                debugger;
                 var matches = [];
                 var result = {};
                 if (jQuery.isPlainObject(path)) {
@@ -92,7 +92,7 @@
                 result = jQuery.extend(
                     {
                         templateUrl: result.path + '.html',
-                        controller: result.name + 'Controller'
+                        controller: _.camelCase(result.name) + 'Controller'
                     },
                     result
                 );
