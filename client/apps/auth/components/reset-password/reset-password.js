@@ -3,7 +3,7 @@
 
     MyProject.codeSetup({
         type: 'controller',
-        name: 'loginController',
+        name: 'resetPasswordController',
         dependencies: ['$rootScope', '$location'],
         services: ['authenticationService', 'flashService'],
         code: main
@@ -15,19 +15,19 @@
 
         var self = {
             username: '',
-            password: '',
-            login: login
+            resetPassword: resetPassword
         };
 
         return self;
 
-        function login() {
+        function resetPassword() {
             my.$rootScope.dataLoading = true;
-            my.authenticationService.login(self.username, self.password, function(response) {
+            my.authenticationService.resetPassword(self.username, function(response) {
                 if (!response.error) {
-                    my.authenticationService.setCredentials(self.username, response);
-                    my.$location.path('/');
+                    // Please, follow the instructions we just sent to your email address.
+                    my.flashService.success(response);
                 } else {
+                    // There was an error: please, try again.
                     my.flashService.error(response.error);
                 }
                 my.$rootScope.dataLoading = false;
