@@ -76,23 +76,23 @@
      *   code         function
      */
     function codeSetup(my) {
-        if (!jQuery.isPlainObject(my)) {
+        if (!_.isPlainObject(my)) {
             throw 'Expected a hash of options.';
         }
-        if (!jQuery.isFunction(my.code)) {
+        if (!_.isFunction(my.code)) {
             throw 'Expected a function into the "code" option.';
         }
         if (!(my.name !== '')) {
             throw 'Expected an identifier into the "name" option.';
         }
-        if (!(jQuery.inArray(my.type, ['controller', 'directive', 'factory', 'filter', 'service']) >= 0)) {
+        if (!(_.inArray(my.type, ['controller', 'directive', 'factory', 'filter', 'service']) >= 0)) {
             throw 'Expected a supported type into the "type" option. (' + my.type + ')';
         }
-        if (!jQuery.isArray(my.services)) {
+        if (!_.isArray(my.services)) {
             console.warn('Expected an array into the "services" option. Using [].');
             my.services = [];
         }
-        if (!jQuery.isArray(my.dependencies)) {
+        if (!_.isArray(my.dependencies)) {
             console.warn('Expected an array into the "dependencies" option. Using [].');
             my.dependencies = [];
         }

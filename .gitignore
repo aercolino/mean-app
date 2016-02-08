@@ -6,4 +6,5 @@ bower_components/
 tmp/
 client/shared/themes/
 client/apps/core/shared/themes/
-client/apps/core/
+client/apps/core/shared/
+client/apps/core/components/
