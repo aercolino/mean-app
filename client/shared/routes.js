@@ -29,11 +29,20 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
             .when('/reset-password',        route.forComponent('auth: reset-password as vm'))
 
 
-            .when('/',                      route.forComponent({
-                                                app: 'core',
-                                                path: '/index',
-                                                controller: ''  // no controller here
-                                            }))
+            // .when('/',                      route.forComponent({
+            //                                     app: 'core',
+            //                                     path: '/index',
+            //                                     controller: ''
+            //                                 }))
+
+            // .when('/',                      route.forComponent({
+            //                                     app: 'core',
+            //                                     path: '/index',
+            //                                     controller: 'myEmptyController',
+            //                                     controllerUrl: '/shared/modules/my-empty-controller.js'
+            //                                 }))
+
+            .when('/',                      route.forComponent('core: home'))
 
             .when('/simulator/twist',       route.forComponent('core: plan-simulator/twist'))
 
@@ -44,7 +53,7 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
         .otherwise({
             redirectTo: function(params, path, search) {
                 console.log('otherwise...');
-                window.location.href = '/core/#/';
+                window.location.href = '/core/#/home';
                 return; // do not return a string !
             }
         });
