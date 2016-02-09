@@ -92,12 +92,13 @@
                 result = _.extend(
                     {
                         templateUrl: result.path + '.html',
-                        controller: _.camelCase(result.name) + 'Controller'
+                        controller: _.camelCase(result.name) + 'Controller',
+                        controllerUrl: result.path + '.js'
                     },
                     result
                 );
 
-                var dependencies = result.controller ? [result.path + '.js'] : [];
+                var dependencies = result.controller ? [result.controllerUrl] : [];
                 result.resolve = {
                     load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
                         if (appName && MyProject.appName === appName) {
