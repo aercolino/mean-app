@@ -13,14 +13,9 @@ define([
 
         var route = routeProvider.route;
 
-        $routeProvider
-
-/*
-si la APP del componente es la app actual, todo como antes
-si la APP del componente es diferente, redirecciona a la APP usando la misma URL matchada
-*/
-
         /* beautify preserve:start */
+
+        $routeProvider
 
             .when('/login',                 route.forComponent('auth: login as vm'))
 
@@ -29,34 +24,44 @@ si la APP del componente es diferente, redirecciona a la APP usando la misma URL
             .when('/reset-password',        route.forComponent('auth: reset-password as vm'))
 
 
+            // Case 1: This works because AngularJS allows a view without a controller (but it does not allow a route without a view).
+            .when('/',                      route.forComponent({
+                                                app: 'core',
+                                                path: 'home',
+                                                controller: ''
+                                            }))
+
+            // Case 2: This works like Case 1, but it requires a controller at /apps/core/components/home/home.js.
+            // .when('/',                      route.forComponent('core: home'))
+
+            // Case 3: This works like Case 2, but using an empty controller.
+            // .when('/',                      route.forComponent({
+            //                                     app: 'core',
+            //                                     path: 'home',
+            //                                     controller: 'myEmptyController',
+            //                                     controllerUrl: '/shared/modules/my-empty-controller.js'
+            //                                 }))
+
+            // This does not work because AngularJS tries to infinitely load /apps/core/index.html into the ng-view of the previous /apps/core/index.html.
             // .when('/',                      route.forComponent({
             //                                     app: 'core',
             //                                     path: '/index',
             //                                     controller: ''
             //                                 }))
 
-            // .when('/',                      route.forComponent({
-            //                                     app: 'core',
-            //                                     path: '/index',
-            //                                     controller: 'myEmptyController',
-            //                                     controllerUrl: '/shared/modules/my-empty-controller.js'
-            //                                 }))
-
-            .when('/',                      route.forComponent('core: home'))
-
             .when('/simulator/twist',       route.forComponent('core: plan-simulator/twist'))
 
             .when('/simulator/shake',       route.forComponent('core: plan-simulator/shake'))
 
+            .otherwise({
+                redirectTo: function(params, path, search) {
+                    console.log('otherwise...');
+                    window.location.href = '/apps/core/#/';
+                    return; // do not return a string !
+                }
+            });
         /* beautify preserve:end */
 
-        .otherwise({
-            redirectTo: function(params, path, search) {
-                console.log('otherwise...');
-                window.location.href = '/core/#/home';
-                return; // do not return a string !
-            }
-        });
     }
 
 });
