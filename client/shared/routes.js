@@ -49,9 +49,10 @@ define([
             //                                     controller: ''
             //                                 }))
 
-            .when('/simulator/twist',       route.forComponent('core: plan-simulator/twist'))
+            // .when('/path-to/some-stuff',      route.forComponent('core: some-dir/something'))
+            // .when('/path-to/more-stuff',      route.forComponent('core: some-dir/anything'))
 
-            .when('/simulator/shake',       route.forComponent('core: plan-simulator/shake'))
+            .when('/bears',                 route.forComponent('core: bears'))
 
             .otherwise({
                 redirectTo: function(params, path, search) {
