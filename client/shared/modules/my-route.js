@@ -48,7 +48,7 @@
                 return defer.promise;
             }
 
-            function forComponent(path, options) {
+            function forComponent(path) {
                 var matches = [];
                 var result = {};
                 if (_.isPlainObject(path)) {
@@ -99,16 +99,18 @@
                 );
 
                 var dependencies = result.controller ? [result.controllerUrl] : [];
-                result.resolve = {
-                    load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
-                        if (appName && MyProject.appName === appName) {
-                            // we are going to a route inside the SPA we are into
-                            return resolveDependencies($q, $rootScope, dependencies);
-                        } else {
-                            // this should not happen...
-                        }
-                    }]
-                };
+                if (dependencies.length) {
+                    result.resolve = {
+                        load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
+                            if (appName && MyProject.appName === appName) {
+                                // we are going to a route inside the SPA we are into
+                                return resolveDependencies($q, $rootScope, dependencies);
+                            } else {
+                                // this should not happen...
+                            }
+                        }]
+                    };
+                }
                 return result;
             }
 
