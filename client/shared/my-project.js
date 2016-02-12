@@ -1,7 +1,6 @@
 (function(global) {
 
     // var appName = 'app';
-    var useCurrentFolder = /^\.\//;
     var register = null;
 
     global.MyProject = {
@@ -11,9 +10,6 @@
         registerSetup: registerSetup,
         codeSetup: codeSetup
     };
-    // Object.defineProperty(global.MyProject, 'appName', {
-    //     value: appName
-    // });
 
     return;
 
@@ -66,6 +62,44 @@
         };
     }
 
+    function moduleConvention(moduleName) {
+        var dotSlashStart = /^\.\//;
+        var componentLevel = moduleName.search(dotSlashStart) === 0;
+
+        var slashStart = /^\//;
+        var appLevel = moduleName.search(slashStart) === 0;
+
+        var wordStart = /^[\w-]/;
+        var clientLevel = moduleName.search(wordStart) === 0;
+
+        var path = '';
+        switch (true) {
+            case componentLevel:
+                path = service('$route').current.path;
+            break;
+
+            case appLevel:
+                path = '/apps/' + MyProject.appName + '/shared/services';
+            break;
+
+            case clientLevel:
+                path = '/shared/services';
+            break;
+
+            default:
+                throw new Error('Expected a service at client, app, or component level.');
+            break;
+        }
+        var pureName = moduleName.replace(/^\W+/, '');
+        var nameBeforeService = pureName.replace(/Service$/, '');
+        var fileName = _.kebabCase(nameBeforeService) + '.service.js';
+        var fullPath = path + '/' + fileName;
+        return {
+            name: pureName,
+            path: fullPath
+        };
+    }
+
     /**
      * Setup a service or a controller.
      *
@@ -101,17 +135,9 @@
         var services = [];
         var paths = [];
         my.services.forEach(function(svcName) {
-            var path = '/shared/services';
-            var svc = svcName.replace(/Service$/, '.service.js');
-            if (svcName.search(useCurrentFolder) >= 0) {
-                path = service('$route').current.$$route.path;
-                svc = svc.replace(useCurrentFolder, '');
-            }
-            var modulePath = path + '/' + svc;
-            paths.push(modulePath);
-            var moduleName = svcName.replace(useCurrentFolder, '');
-            services.push(moduleName);
-            // console.log(moduleName + ': ' + modulePath);
+            var module = moduleConvention(svcName);
+            paths.push(module.path);
+            services.push(module.name);
         });
 
         define(paths, function() {
