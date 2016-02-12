@@ -4,7 +4,7 @@
     MyProject.codeSetup({
         type: 'factory',
         name: 'authenticationService',
-        dependencies: ['$http', '$rootScope', 'config'],
+        dependencies: ['$http', '$rootScope'],
         services: ['storageService'],
         code: main
     });
@@ -77,14 +77,14 @@
                 currentUser: null
             };
 
-            delete my.$http.defaults.headers.common['X-Auth-Token'];
+            delete my.$http.defaults.headers.common['x-access-token'];
             my.storageService.removeItem('globals');
         }
 
 
         function resetPassword(username, callback) {
             my.$http
-                .post(my.config.urlSecurityService + '/resetPassword', { 
+                .post('/api/users/reset-password', { 
                     username: username })
                 .then(function (success) {
                     callback(success.data);
