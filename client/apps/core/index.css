@@ -9,7 +9,7 @@ html body {
   padding: 20px 0;
 }
 
-html body .container-fluid.body-content {
+html body .body-content {
   position: absolute;
   top: 60px;
   bottom: 30px;
