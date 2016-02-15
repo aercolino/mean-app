@@ -34,6 +34,7 @@
     "angular-messages": "~1.4.9",
     "angular-resource": "~1.4.9",
     "angular-route": "~1.4.9",
-    "lodash": "~4.3.0"
+    "lodash": "~4.3.0",
+    "bootcards": "~1.1.2"
   }
 }
