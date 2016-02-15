@@ -13,7 +13,7 @@
 
     function main(my) {
         
-        my.$scope.bears = my.bearsService.List(function (response) {
+        my.bearsService.List(function (response) {
             if (response.error) {
                 return my.flashService.error(response.error);
             }
