@@ -11,6 +11,8 @@
 
 
     function main(my) {
+        var config = _.mapValues(DefaultConfig(), 'default');
+
         var self = {
             Config: Config,
             List:   List,
@@ -30,9 +32,6 @@
             result += failure.data.message ? '\n' + failure.data.message : '';
             return result;
         }
-
-
-        var config = _.mapValues(DefaultConfig(), 'default');
 
 
         function DefaultConfig() {
