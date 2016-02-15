@@ -11,9 +11,8 @@
 
 
     function main(my) {
-        var config = _.mapValues(DefaultConfig(), 'default');
-
         var self = {
+            config: _.mapValues(DefaultConfig(), 'default');,
             Config: Config,
             List:   List,
             Create: Create,
@@ -59,17 +58,17 @@
             if (_.isPlainObject(what)) {
                 // set
                 what = _.pick(what, _.keys(DefaultConfig()));
-                config = _.assign(config, what);
+                self.config = _.assign(self.config, what);
                 _.forEach(_.mapValues(DefaultConfig(), 'filter'), function (filter, key) {
                     if (_.isFunction(filter)) {
-                        config[key] = filter(config[key]);
+                        self.config[key] = filter(self.config[key]);
                     }
                 });
                 return self;
             }
             else if (_.isString(what)) {
                 // get
-                return config[what];
+                return self.config[what];
             }
             else {
                 throw new Error('Expected an object to set or a string to get the value of a config property.');
@@ -79,7 +78,7 @@
 
         function List(callback) {
             my.$http
-                .get(config.endpointList || config.endpoint)
+                .get(self.config.endpointList || self.config.endpoint)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
@@ -92,7 +91,7 @@
 
         function Create(data, callback) {
             my.$http
-                .post(config.endpointCreate || config.endpoint, data)
+                .post(self.config.endpointCreate || self.config.endpoint, data)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
@@ -105,7 +104,7 @@
 
         function Read(id, callback) {
             my.$http
-                .get((config.endpointRead || config.endpoint) + id)
+                .get((self.config.endpointRead || self.config.endpoint) + id)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
@@ -118,7 +117,7 @@
 
         function Update(id, data, callback) {
             my.$http
-                .put((config.endpointUpdate || config.endpoint) + id, data)
+                .put((self.config.endpointUpdate || self.config.endpoint) + id, data)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
@@ -131,7 +130,7 @@
 
         function Delete(id, callback) {
             my.$http
-                .delete((config.endpointDelete || config.endpoint) + id)
+                .delete((self.config.endpointDelete || self.config.endpoint) + id)
                 .then(function (success) {
                     callback(success.data);
                 }, function (failure) {
