@@ -11,7 +11,16 @@
 
 
     function main(my) {
-        var self = my.crudService.Init({endpoint: '/api/users/'});
+        var method = 2;
+        switch (method) {
+            case 1:
+                var self = my.crudService.Init({endpoint: '/api/user/'});
+            break;
+
+            case 2:
+                var self = my.crudService.Init({endpoint: '/api/users/'});
+            break;
+        }
         return self;
     }
 
