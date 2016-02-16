@@ -14,8 +14,34 @@
         var self = {
             Init: Init
         };
-
         return self;
+
+
+        function StandardSuccess(successResponse) {
+            return successResponse.data;
+        }
+
+
+        function StandardFailure(failureResponse) {
+            function MessageFor(failureResponse) {
+                var result = 'Error';
+                result += ' ' + failureResponse.status + ' (' + failureResponse.statusText + ')';
+                result += ' @ ' + (new Date());
+                if (_.isPlainObject(failureResponse.data)) {
+                    result += failureResponse.data.message ? '\n' + failureResponse.data.message : '';
+                } else
+                if (_.isString(failureResponse.data)) {
+                    result += '\n' + failureResponse.data;
+                } else {
+                    result += '\n' + JSON.stringify(failureResponse.data);
+                }
+                return result;
+            }
+
+            return {
+                error: MessageFor(failureResponse)
+            }
+        }
 
 
         function DefaultConfig() {
@@ -61,83 +87,59 @@
                 Create: Create,
                 Read:   Read,
                 Update: Update,
-                Delete: Delete
+                Delete: Delete,
+                $crudService: {
+                    SuccessResponse: StandardSuccess,
+                    FailureResponse: StandardFailure
+                }
             };
 
             return self;
 
 
-            function messageFor(failure) {
-                var result = 'Error';
-                result += ' ' + failure.status + ' (' + failure.statusText + ')';
-                result += ' @ ' + (new Date());
-                result += failure.data.message ? '\n' + failure.data.message : '';
-                return result;
+            function ThenCallback(promise, callback) {
+                if (_.isFunction(callback)) {
+                    promise.then(function (successResponse) {
+                        callback(StandardSuccess(successResponse));
+                    }, function (failureResponse) {
+                        callback(StandardFailure(failureResponse));
+                    });
+                }
             }
 
 
             function List(callback) {
-                my.$http
-                    .get(config.endpointList || config.endpoint)
-                    .then(function (success) {
-                        callback(success.data);
-                    }, function (failure) {
-                        callback({
-                            error: messageFor(failure)
-                        });
-                    });
+                var promise = my.$http.get(config.endpointList || config.endpoint);
+                ThenCallback(promise, callback);
+                return promise;
             }
 
 
             function Create(data, callback) {
-                my.$http
-                    .post(config.endpointCreate || config.endpoint, data)
-                    .then(function (success) {
-                        callback(success.data);
-                    }, function (failure) {
-                        callback({
-                            error: messageFor(failure)
-                        });
-                    });
+                var promise = my.$http.post(config.endpointCreate || config.endpoint, data);
+                ThenCallback(promise, callback);
+                return promise;
             }
 
 
             function Read(id, callback) {
-                my.$http
-                    .get((config.endpointRead || config.endpoint) + id)
-                    .then(function (success) {
-                        callback(success.data);
-                    }, function (failure) {
-                        callback({
-                            error: messageFor(failure)
-                        });
-                    });
+                var promise = my.$http.get((config.endpointRead || config.endpoint) + id);
+                ThenCallback(promise, callback);
+                return promise;
             }
 
 
             function Update(id, data, callback) {
-                my.$http
-                    .put((config.endpointUpdate || config.endpoint) + id, data)
-                    .then(function (success) {
-                        callback(success.data);
-                    }, function (failure) {
-                        callback({
-                            error: messageFor(failure)
-                        });
-                    });
+                var promise = my.$http.put((config.endpointUpdate || config.endpoint) + id, data);
+                ThenCallback(promise, callback);
+                return promise;
             }
 
 
             function Delete(id, callback) {
-                my.$http
-                    .delete((config.endpointDelete || config.endpoint) + id)
-                    .then(function (success) {
-                        callback(success.data);
-                    }, function (failure) {
-                        callback({
-                            error: messageFor(failure)
-                        });
-                    });
+                var promise = my.$http.delete((config.endpointDelete || config.endpoint) + id);
+                ThenCallback(promise, callback);
+                return promise;
             }
         }
     }
