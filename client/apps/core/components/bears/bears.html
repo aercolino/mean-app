@@ -6,7 +6,7 @@
             <div class="list-group">
                 <a class="list-group-item" ng-repeat="bear in bears" ng-click="selectedBear = bear._id">
                     <h4 class="list-group-item-heading">{{bear.name}}</h4>
-                    <p class="list-group-item-text">{{bear._id}}</p>
+                    <p class="list-group-item-text">{{bear._id}} -- {{bear.roles}}</p>
                 </a>
             </div>
         </div>
