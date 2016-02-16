@@ -33,7 +33,13 @@ function TypeOf(value) {
 
 
 function ErrorMessage(error, ignoreStack) {
-    return error && (!ignoreStack && error.stack || error.message || error.err || error) || null;
+    var result = error && (!ignoreStack && error.stack || error.message || error.err || error) || null;
+    if (result) {
+        // Obfuscate paths
+        result = result.replace(absPath, '(server)');
+        result = result.replace(clientPath, '(client)');
+    }
+    return result;
 }
 
 
