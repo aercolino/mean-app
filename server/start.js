@@ -62,7 +62,12 @@ app.get('/core', function(req, res) {
 
 // catch all to serve client files
 app.get('*', function(req, res) {
-    res.sendfile(clientPath + req.url.replace(/\?.*/, ''));
+    res.sendfile(clientPath + req.url.replace(/\?.*/, ''), function (err) {
+        if (err) {
+            var SendFailure = require('./app/shared/stuff').SendFailure;
+            SendFailure(res, err, 'Bad Request');
+        }
+    });
 });
 
 
