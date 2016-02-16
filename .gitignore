@@ -7,3 +7,8 @@ tmp/
 client/shared/themes/
 client/apps/core/shared/themes/
 client/apps/core/components/plan-simulator/
+
+client/apps/core/shared/directives/
+client/apps/core/shared/layouts/
+client/apps/core/shared/views/
+client/apps/core/shared/config.js
