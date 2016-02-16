@@ -3,7 +3,7 @@
 
     MyProject.codeSetup({
         type: 'factory',
-        name: 'bearsService',
+        name: 'usersService',
         dependencies: [],
         services: ['crudService'],
         code: main
@@ -11,7 +11,7 @@
 
 
     function main(my) {
-        var self = my.crudService.Init({endpoint: '/api/bears/'});
+        var self = my.crudService.Init({endpoint: '/api/users/'});
         return self;
     }
 
