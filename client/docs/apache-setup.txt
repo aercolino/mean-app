@@ -1,5 +1,0 @@
-Local Apache Setup:
-   ProxyPass        /core http://localhost:8080/core-services/api/rest
-   ProxyPassReverse /core http://localhost:8080/core-services/api/rest
-   ProxyPass        /auth http://localhost:8080/auth-services/api/rest
-   ProxyPassReverse /auth http://localhost:8080/auth-services/api/rest
