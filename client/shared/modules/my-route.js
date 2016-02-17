@@ -1,11 +1,10 @@
 (function() {
     'use strict';
 
-    // https://github.com/DanWahlin/CustomerManager/blob/master/CustomerManager/app/customersApp/services/routeResolver.js 
-    // as previously modified by MyProject devs, plus "forComponent()" added by Andrea Ercolino for MyProject.
+    // See https://github.com/DanWahlin/CustomerManager/blob/master/CustomerManager/app/customersApp/services/routeResolver.js 
 
     // Note that this service is a module hosting a provider (it is loaded by the routes definition file)
-    // (we are not using MyProject.codeSetup here because this is not a component of 'app')
+    // (we are not using MyProject.codeSetup here because this is not a component of an application)
 
     angular
         .module('myRoute', [])
