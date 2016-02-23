@@ -27,7 +27,7 @@ define([
             // Case 1: This works because AngularJS allows a view without a controller (but it does not allow a route without a view).
             .when('/',                      route.forComponent({
                                                 app: 'core',
-                                                path: 'home',
+                                                filepath: 'home',
                                                 controller: ''
                                             }))
 
@@ -37,7 +37,7 @@ define([
             // Case 3: This works like Case 2, but using an empty controller.
             // .when('/',                      route.forComponent({
             //                                     app: 'core',
-            //                                     path: 'home',
+            //                                     filepath: 'home',
             //                                     controller: 'myEmptyController',
             //                                     controllerUrl: '/shared/modules/my-empty-controller.js'
             //                                 }))
@@ -45,7 +45,7 @@ define([
             // This does not work because AngularJS tries to infinitely load /apps/core/index.html into the ng-view of the previous /apps/core/index.html.
             // .when('/',                      route.forComponent({
             //                                     app: 'core',
-            //                                     path: '/index',
+            //                                     filepath: '/index',
             //                                     controller: ''
             //                                 }))
 
