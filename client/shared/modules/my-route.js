@@ -47,19 +47,19 @@
                 return defer.promise;
             }
 
-            function forComponent(path) {
+            function forComponent(options) {
                 var matches = [];
                 var result = {};
-                if (_.isPlainObject(path)) {
-                    result = path;
+                if (_.isPlainObject(options)) {
+                    result = options;
                 } else {
-                    var simplified = path.replace(/^\s+|\s+$/, '').replace(/\s+/, ' ').replace(/ ?: ?/, ':');
+                    var simplified = options.replace(/^\s+|\s+$/, '').replace(/\s+/, ' ').replace(/ ?: ?/, ':');
                     var formatAppPathAlias = /(?:([\w-]+):)?([\/\w-]+)(?: as ([\w-]+))?/i;
-                    result = match(simplified, formatAppPathAlias, ['', 'app', 'path', 'controllerAs']);
+                    result = match(simplified, formatAppPathAlias, ['', 'app', 'folder', 'controllerAs']);
                 }
 
-                if (!result.path) {
-                    throw 'Expected a path for the component.';
+                if (!result.folder) {
+                    throw 'Expected a folder for the component.';
                 }
 
                 var appName = result.app;
@@ -67,32 +67,32 @@
                     return redirectTo('/apps/' + appName);
                 }
 
-                if (result.path[0] == '/') {
-                    // expecting a path relative to /apps/<app>
-                    result.path = '/apps/' + appName + result.path;
+                if (result.folder[0] == '/') {
+                    // expecting a folder relative to /apps/<app>
+                    result.folder = '/apps/' + appName + result.folder;
                 } else {
-                    // expecting a path relative to /apps/<app>/components
-                    if (result.path.search('/') > 0) {
-                        // explicit path (always without extension), like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
-                        // use the path as is
+                    // expecting a folder relative to /apps/<app>/components
+                    if (result.folder.search('/') > 0) {
+                        // explicit folder (always without extension), like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
+                        // use the folder as is
                     } else {
-                        // implicit path (always without extension), like: 'login'                 --> '/apps/auth/components/login/login'
-                        // double the path
-                        result.path += '/' + result.path;
+                        // implicit folder (always without extension), like: 'login'                 --> '/apps/auth/components/login/login'
+                        // double the folder
+                        result.folder += '/' + result.folder;
                     }
-                    result.path = '/apps/' + appName + '/components/' + result.path;
+                    result.folder = '/apps/' + appName + '/components/' + result.folder;
                 }
                 
                 var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
                 result = _.extend(
-                    match(result.path, formatPathToFile, ['', '', 'name']),
+                    match(result.folder, formatPathToFile, ['', '', 'name']),
                     result
                 );
                 result = _.extend(
                     {
-                        templateUrl: result.path + '.html',
+                        templateUrl: result.folder + '.html',
                         controller: _.camelCase(result.name) + 'Controller',
-                        controllerUrl: result.path + '.js'
+                        controllerUrl: result.folder + '.js'
                     },
                     result
                 );
