@@ -44,7 +44,8 @@
             getItem: getItem,
             onBeforePersist: onBeforePersist,
             removeItem: removeItem,
-            setItem: setItem
+            setItem: setItem,
+            flush: flush
         };
         return (self);
 
@@ -181,6 +182,25 @@
         }
 
 
+        // Aercolino: Extracted this code from persistData and exported.
+        function flush() {
+
+            // There's a chance that localStorage isn't available, even in modern
+            // browsers. And, even if it does exist, we may be attempting to store
+            // more data that we can based on per-domain quotas.
+            try {
+
+                my.$window.localStorage.setItem(storageKey, angular.toJson(items));
+
+            } catch (localStorageError) {
+
+                my.$exceptionHandler(localStorageError);
+
+            }
+
+        }
+
+
         // I attempt to persist the cache to the localStorage.
         function persistData() {
 
@@ -208,18 +228,7 @@
 
             }
 
-            // There's a chance that localStorage isn't available, even in modern
-            // browsers. And, even if it does exist, we may be attempting to store
-            // more data that we can based on per-domain quotas.
-            try {
-
-                my.$window.localStorage.setItem(storageKey, angular.toJson(items));
-
-            } catch (localStorageError) {
-
-                my.$exceptionHandler(localStorageError);
-
-            }
+            flush();
 
         }
 
