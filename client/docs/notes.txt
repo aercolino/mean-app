@@ -37,3 +37,9 @@ In the routes.js (a) or the directive (b), do not bind the controller with an al
 -a- .when('/login', route.forComponent('authenticator/login'))
 -b- ng-controller="loginController"
 
+
+---
+
+The name of the variable returned by any function without side effects is always 'result'.
+The name of the variable returned by any function WITH side effects is never 'result'.
+
