@@ -18,29 +18,46 @@ client/
         register/
           register.html
           register.js
+        reset-password/
+          reset-password.html
+          reset-password.js
+      index
+        index.css
+      index.html
       shared/
-        layout/
         config.js
+        modules/
+        services/
       start.js
     core/
       components/
         bears/
+          bears.html
+          bears.js
+        home/
+          home.html
         users/
+          users.html
+          users.js
+      index/
+        index.css
+      index.html
       shared/
-        layout/
-        services/
         config.js
+        modules/
+        services/
+          bears.service.js
+          users.service.js
       start.js
   bower_components/
   docs/
-  drafts/
   shared/
+    config.js
     modules/
     services/
       authentication.service.js
       base64.service.js
       flash.service.js
       storage.service.js
-    themes/
     my-project.js
     routes.js
