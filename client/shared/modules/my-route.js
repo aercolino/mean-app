@@ -84,14 +84,11 @@
                 }
                 
                 var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
-                result = _.extend(
-                    match(result.filepath, formatPathToFile, ['', '', 'controllerFile']),
-                    result
-                );
+                var file = match(result.filepath, formatPathToFile, ['', '', 'file']).file;
                 result = _.extend(
                     {
                         templateUrl: result.filepath + '.html',
-                        controller: _.camelCase(result.controllerFile) + 'Controller',
+                        controller: _.camelCase(file) + 'Controller',
                         controllerUrl: result.filepath + '.js'
                     },
                     result
