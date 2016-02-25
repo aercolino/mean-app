@@ -23,7 +23,7 @@
 
 <body>
     <header class="text-center">
-        <h3>My Project / Auth Layout</h3>
+        <h3>Auth Application</h3>
     </header>
     <div class="container-fluid body-content">
         <div id="flashMessage" class="animate-show" ng-show="flash" ng-cloak>
@@ -33,7 +33,7 @@
         <div ng-view></div>
     </div>
     <footer class="text-center">
-        <h6>Powered by MEAN App, my way.</h6>
+        <h6 ng-cloak>Powered by <a href="https://github.com/aercolino/mean-app" target="_blank">MEAN App, my way</a> - Copyright {{appTime.getFullYear()}}</h6>
     </footer>
     <!-- 
     Then load my project and RequireJS. -->
