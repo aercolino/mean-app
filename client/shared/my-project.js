@@ -1,19 +1,80 @@
 (function(global) {
 
-    // var appName = 'app';
+    var appName = 'app';
+    var anonymousRoutes = [];
     var register = null;
 
     global.MyProject = {
-        appName: 'app',
-        currentUser: currentUser,
-        uniqueUrl: uniqueUrl,
-        registerSetup: registerSetup,
+        AppName: AppName,
+        RouteIsRestricted: RouteIsRestricted,
+        Config: Config,
+        CurrentUser: CurrentUser,
+        UniqueUrl: UniqueUrl,
+        RegisterSetup: RegisterSetup,
         CodeSetup: CodeSetup
     };
 
     return;
 
-    function currentUser() {
+
+    function AppName() {
+        return appName;
+    }
+
+    function AnonymousRoutes() {
+        return anonymousRoutes;
+    }
+
+    function RouteIsRestricted($location) {
+        var result = _.indexOf(anonymousRoutes, $location.path()) < 0;
+        return result;
+    }
+
+    function Config(options) {
+        var available = {
+            appName: ConfigAppName,
+            requireJS: ConfigRequireJS,
+            anonymousRoutes: ConfigAnonymousRoutes
+        };
+        var keys = Object.keys(options);
+        _.forEach(keys, function (key) {
+            if (available[key]) {
+                available[key].call(options, options[key]);
+            }
+        });
+    }
+
+    function ConfigAppName(name) {
+        appName = name;
+    }
+
+    function ConfigRequireJS() {
+        requirejs.config({
+            // urlArgs: MyProject.UniqueUrl('?v=1.0').replace('?', ''),
+
+            // paths is used for translating paths or path prefixes to absolute paths
+            paths: {
+                // help requirejs find dependencies internal to bower components
+                jquery: '/bower_components/jquery/dist/jquery',
+                angular: '/bower_components/angular/angular'
+            }
+        });
+
+        // avoid double load of dependencies already loaded by means of a script tag 
+        // https://github.com/jrburke/requirejs/issues/535#issuecomment-10540037
+        define('jquery', function() {
+            return jQuery;
+        });
+        define('angular', function() {
+            return angular;
+        });
+    }
+
+    function ConfigAnonymousRoutes(routes) {
+        anonymousRoutes = routes;
+    }
+
+    function CurrentUser() {
         try {
             var injector = angular.element(document).injector();
             var storageService = injector.get('storageService');
@@ -24,7 +85,7 @@
         }
     }
 
-    function uniqueUrl(path, unique) {
+    function UniqueUrl(path, unique) {
         if (typeof unique == 'undefined') {
             unique = (new Date).valueOf();
         }
@@ -52,7 +113,7 @@
         return result;
     }
 
-    function registerSetup($compileProvider, $controllerProvider, $filterProvider, $provide) {
+    function RegisterSetup($compileProvider, $controllerProvider, $filterProvider, $provide) {
         register = {
             controller: $controllerProvider.register,
             directive: $compileProvider.directive,
@@ -79,7 +140,7 @@
             break;
 
             case appLevel:
-                path = '/apps/' + MyProject.appName + '/shared/services';
+                path = '/apps/' + appName + '/shared/services';
             break;
 
             case clientLevel:
@@ -158,7 +219,7 @@
                 register[my.type](my.name, runner);
             } else {
                 // this allows to register stuff before the bootstrap
-                angular.module(MyProject.appName)[my.type](my.name, runner);
+                angular.module(appName)[my.type](my.name, runner);
             }
         });
     }

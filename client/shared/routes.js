@@ -3,8 +3,12 @@ define([
 ], function() {
     'use strict';
 
+    MyProject.Config({
+        anonymousRoutes: ['/login', '/register', '/reset-password']
+    });
+
     angular
-        .module(MyProject.appName)
+        .module(MyProject.AppName())
         .config(routes);
 
     routes.$inject = ['$routeProvider', 'routeProvider'];

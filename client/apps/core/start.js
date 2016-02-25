@@ -1,38 +1,18 @@
 (function() {
-
     'use strict';
-    MyProject.appName = 'core';
+    
+    MyProject.Config({
+        appName: 'core',
+        requireJS: true
+    });
 
-    // this initial piece of configuration makes it possible to require modules later
+    // config the app ASAP to load modules using RequireJS even before
     // ---------------------------------------------------------------------------------------------------------- start
     angular
-        .module(MyProject.appName, ['ngRoute', 'myRoute'])
+        .module(MyProject.AppName(), ['ngRoute', 'myRoute'])
         .config(['$compileProvider', '$controllerProvider', '$filterProvider', '$provide',
-            MyProject.registerSetup
+            MyProject.RegisterSetup
         ]);
-    // ------------------------------------------------------------------------------------------------------------ end
-
-    // this is the configuration for requirejs
-    // ---------------------------------------------------------------------------------------------------------- start
-    requirejs.config({
-        // urlArgs: MyProject.uniqueUrl('?v=1.0').replace('?', ''),
-
-        // paths is used for translating paths or path prefixes to absolute paths
-        paths: {
-            // help requirejs find dependencies internal to bower components
-            jquery: '/bower_components/jquery/dist/jquery',
-            angular: '/bower_components/angular/angular'
-        }
-    });
-
-    // avoid double load of dependencies already loaded by means of a script tag 
-    // https://github.com/jrburke/requirejs/issues/535#issuecomment-10540037
-    define('jquery', function() {
-        return jQuery;
-    });
-    define('angular', function() {
-        return angular;
-    });
     // ------------------------------------------------------------------------------------------------------------ end
 
     /* beautify preserve:start */
@@ -49,71 +29,58 @@
     /* beautify preserve:end */
 
         function() {
-            'use strict';
-
             angular
-                .module(MyProject.appName)
+                .module(MyProject.AppName())
                 .run(run);
 
             run.$inject = ['$rootScope', '$location', '$http', 'storageService', 'authenticationService', 'flashService'];
 
             function run($rootScope, $location, $http, storageService, authenticationService, flashService) {
-                // getFullYear is used in the main layout
-                $rootScope.currentYear = (new Date()).getFullYear();
-
-                // nowAt is used in the sidebar of the authenticated layout
-                $rootScope.nowAt = nowAt;
-
-                // keep user logged in after page refresh
-                $rootScope.globals = storageService.getItem('globals') || {};
-                var loggedIn = !!$rootScope.globals.currentUser;
-                if (loggedIn) {
-                    setHeaderOrRedirect($rootScope.globals.currentUser.authdata);
-                }
-
-                $rootScope.$on('$locationChangeSuccess', function(event, next, current) {
-                    // to make sure the loading indicator disappears for successful new pages
-                    $rootScope.dataLoading = false;
-                });
+                $rootScope.appTime = new Date();
+                CheckLogin();
 
                 $rootScope.$on('$locationChangeStart', function(event, next, current) {
-                    // redirect to login page if not logged in and trying to access a restricted page
-                    var anonymousPages = ['/login', '/register', '/reset-password'];
-                    var restrictedPage = _.indexOf(anonymousPages, $location.path()) < 0;
+                    var restricted = MyProject.RouteIsRestricted($location);
                     var loggedIn = !!$rootScope.globals.currentUser;
-                    if (restrictedPage && !loggedIn) {
+                    if (restricted && !loggedIn) {
                         $location.path('/login');
                     }
+                    $rootScope.dataLoading = true;
+                });
+
+                $rootScope.$on('$locationChangeSuccess', function(event, next, current) {
+                    $rootScope.dataLoading = false;
                 });
 
                 return;
 
-                function setHeaderOrRedirect(token) {
-                    $rootScope.dataLoading = true;
+
+                function CheckLogin() {
+                    $rootScope.globals = storageService.getItem('globals') || {};
+                    var loggedIn = !!$rootScope.globals.currentUser;
+                    if (loggedIn) {
+                        ContinueOrLogout($rootScope.globals.currentUser.authdata);
+                    }
+                }
+
+                function ContinueOrLogout(token) {
                     authenticationService.check(token, function(response) {
-                        if (!response.error) {
-                            if (response) {
-                                $http.defaults.headers.common['x-access-token'] = token; // jshint ignore:line
-                            } else {
-                                $location.path('/login');
-                            }
-                        } else {
-                            $location.path('/login');
-                            flashService.error(response.error, true);
-                            $rootScope.dataLoading = false;
+                        var message = '';
+                        if (response.success) {
+                            $http.defaults.headers.common['x-access-token'] = token;
+                            message = $location.path() !== '/login' ? 'Welcome back' : 'See you soon';
+                            message += ', ' + response.payload + '.';
+                            flashService.success(message);
+                            return;
                         }
+                        $location.path('/login');
+                        message = response.error ? response.error : JSON.stringify(response);
+                        flashService.error(message, true);
                     });
                 }
-
-                function nowAt(path) {
-                    var result = location.hash.search(path) >= 0;
-                    return result;
-                }
-
             }
 
-            angular.bootstrap(document, [MyProject.appName]);
-
+            angular.bootstrap(document, [MyProject.AppName()]);
         });
 
 })();

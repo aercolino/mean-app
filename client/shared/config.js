@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module(MyProject.appName)
+        .module(MyProject.AppName())
         .value('config', {
             
         });
