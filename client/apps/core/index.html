@@ -14,6 +14,16 @@
     <!-- Bootcards: end -->
     <link href="/apps/core/index/index.css" rel="stylesheet" />
     <link rel="icon" href="/shared/themes/default/favicon.ico">
+    <!-- 
+    First of all, load Lodash and jQuery. -->
+    <script src="/bower_components/lodash/dist/lodash.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <!-- 
+    After jQuery, load AngularJS. 
+    Keep AngularJS in the HEAD to use ng-cloak -->
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-route/angular-route.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
 </head>
 
 <body>
@@ -21,23 +31,16 @@
         <h3>My Project / Core Layout</h3>
     </header>
     <div class="container body-content">
-        <div id="flashMessage" class="animate-show" ng-show="flash">
-            <pre ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success' , 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></pre>
+        <div id="flashMessage" class="animate-show" ng-show="flash" ng-cloak>
+            <pre ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success' , 'alert-danger': flash.type === 'error' }" 
+                    ng-if="flash" ng-bind="flash.message"></pre>
         </div>
+        <p><a href="#/">Home</a> | <a href="#/bears">Bears</a> | <a href="#/login">Log out</a></p>
         <div ng-view></div>
     </div>
     <footer class="text-center">
         <h6>Powered by MEAN App, my way.</h6>
     </footer>
-    <!-- 
-    First of all, load Lodash and jQuery. -->
-    <script src="/bower_components/lodash/dist/lodash.js"></script>
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <!-- 
-    After jQuery, load AngularJS. -->
-    <script src="/bower_components/angular/angular.js"></script>
-    <script src="/bower_components/angular-route/angular-route.js"></script>
-    <script src="/bower_components/angular-animate/angular-animate.js"></script>
     <!-- 
     Then load my project and RequireJS. -->
     <script src="/shared/my-project.js"></script>

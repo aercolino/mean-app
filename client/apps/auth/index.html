@@ -3,14 +3,22 @@
 
 <head>
     <title>My Project</title>
-
     <meta name="description" content="Mean App, my way - Client side." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-
     <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/apps/auth/index/index.css" rel="stylesheet" />
     <link rel="icon" href="/shared/themes/default/favicon.ico">
+    <!-- 
+    First of all, load Lodash and jQuery. -->
+    <script src="/bower_components/lodash/dist/lodash.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <!-- 
+    After jQuery, load AngularJS. 
+    Keep AngularJS in the HEAD to use ng-cloak -->
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-route/angular-route.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
 </head>
 
 <body>
@@ -18,7 +26,7 @@
         <h3>My Project / Auth Layout</h3>
     </header>
     <div class="container-fluid body-content">
-        <div id="flashMessage" class="animate-show" ng-show="flash">
+        <div id="flashMessage" class="animate-show" ng-show="flash" ng-cloak>
             <pre ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success' , 'alert-danger': flash.type === 'error' }" 
                     ng-if="flash" ng-bind="flash.message"></pre>
         </div>
@@ -27,21 +35,12 @@
     <footer class="text-center">
         <h6>Powered by MEAN App, my way.</h6>
     </footer>
-
-    <!-- First of all, load Lodash and jQuery. -->
-    <script src="/bower_components/lodash/dist/lodash.js"></script>
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-
-    <!-- After jQuery, load AngularJS. -->
-    <script src="/bower_components/angular/angular.js"></script>
-    <script src="/bower_components/angular-route/angular-route.js"></script>
-    <script src="/bower_components/angular-animate/angular-animate.js"></script>
-
-    <!-- Then load my project and RequireJS. -->
+    <!-- 
+    Then load my project and RequireJS. -->
     <script src="/shared/my-project.js"></script>
     <script data-main="/apps/auth/start" src="/bower_components/requirejs/require.js"></script>
-
-    <!-- Finally, load additional JS libs, if any. -->
+    <!-- 
+    Finally, load additional JS libs, if any. -->
 </body>
 
 </html>
