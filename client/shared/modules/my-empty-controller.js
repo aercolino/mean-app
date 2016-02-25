@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    MyProject.codeSetup({
+    MyProject.CodeSetup({
         type: 'controller',
         name: 'myEmptyController',
         dependencies: [],

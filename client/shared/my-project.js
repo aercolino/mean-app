@@ -8,7 +8,7 @@
         currentUser: currentUser,
         uniqueUrl: uniqueUrl,
         registerSetup: registerSetup,
-        codeSetup: codeSetup
+        CodeSetup: CodeSetup
     };
 
     return;
@@ -110,7 +110,7 @@
      *   services     Array[String]
      *   code         function
      */
-    function codeSetup(my) {
+    function CodeSetup(my) {
         if (!_.isPlainObject(my)) {
             throw 'Expected a hash of options.';
         }

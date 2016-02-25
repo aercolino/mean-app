@@ -4,7 +4,7 @@
     // See https://github.com/DanWahlin/CustomerManager/blob/master/CustomerManager/app/customersApp/services/routeResolver.js 
 
     // Note that this service is a module hosting a provider (it is loaded by the routes definition file)
-    // (we are not using MyProject.codeSetup here because this is not a component of an application)
+    // (we are not using MyProject.CodeSetup here because this is not a component of an application)
 
     angular
         .module('myRoute', [])
