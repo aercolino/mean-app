@@ -8,6 +8,7 @@
         AppName: AppName,
         RouteIsRestricted: RouteIsRestricted,
         Config: Config,
+        Service: Service,
         CurrentUser: CurrentUser,
         UniqueUrl: UniqueUrl,
         RegisterSetup: RegisterSetup,
@@ -76,12 +77,11 @@
 
     function CurrentUser() {
         try {
-            var injector = angular.element(document).injector();
-            var storageService = injector.get('storageService');
+            var storageService = Service('storageService');
             var globals = storageService.getItem('globals');
             return globals.currentUser;
         } catch (e) {
-            return null;
+            return {};
         }
     }
 
@@ -108,9 +108,13 @@
         return result;
     }
 
-    function service(name) {
-        var result = angular.element(document.body).injector().get(name);
-        return result;
+    function Service(name) {
+        try {
+            var result = angular.element(document.body).injector().get(name);
+            return result;
+        } catch (e) {
+            return {};
+        }
     }
 
     function RegisterSetup($compileProvider, $controllerProvider, $filterProvider, $provide) {
@@ -136,7 +140,7 @@
         var path = '';
         switch (true) {
             case componentLevel:
-                path = service('$route').current.path;
+                path = Service('$route').current.path;
             break;
 
             case appLevel:
