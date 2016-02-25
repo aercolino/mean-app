@@ -182,7 +182,7 @@
         }
 
 
-        // Aercolino: Extracted this code from persistData and exported.
+        // aercolino: Extracted this code from persistData and exported.
         function flush() {
 
             // There's a chance that localStorage isn't available, even in modern
