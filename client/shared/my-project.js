@@ -75,6 +75,15 @@
         anonymousRoutes = routes;
     }
 
+    function Service(name) {
+        try {
+            var result = angular.element(document.body).injector().get(name);
+            return result;
+        } catch (e) {
+            return {};
+        }
+    }
+
     function CurrentUser() {
         try {
             var storageService = Service('storageService');
@@ -106,15 +115,6 @@
 
         var result = (slash ? '/' : '') + (pathname ? pathname : '') + '?' + search + (hash ? '#' + hash : '');
         return result;
-    }
-
-    function Service(name) {
-        try {
-            var result = angular.element(document.body).injector().get(name);
-            return result;
-        } catch (e) {
-            return {};
-        }
     }
 
     function RegisterSetup($compileProvider, $controllerProvider, $filterProvider, $provide) {
@@ -169,7 +169,7 @@
      * Setup a service or a controller.
      *
      * @param my Hash
-     *   type         in ['factory', 'controller']
+     *   type         like 'factory', 'controller', ...
      *   name         identifier
      *   dependencies Array[String]
      *   services     Array[String]
