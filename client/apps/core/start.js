@@ -38,7 +38,7 @@
     /* beautify preserve:start */
 
     require([
-        '/shared/services/storage.service.js',         // for using localStorage without serializing / deserializing
+        '/shared/services/storage.service.js',         // for caching localStorage in memory
         '/shared/services/authentication.service.js',  // for checking user credentials
         '/shared/services/flash.service.js',           // for giving feedback to the user
 
