@@ -18,7 +18,7 @@
             password: '',
             login: login
         };
-
+        
         return self;
 
         function login() {

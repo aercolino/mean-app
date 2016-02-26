@@ -20,7 +20,7 @@
             password: '',
             register: register
         };
-
+        
         return self;
 
         function register() {

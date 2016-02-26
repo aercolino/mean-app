@@ -17,7 +17,7 @@
             username: '',
             resetPassword: resetPassword
         };
-
+        
         return self;
 
         function resetPassword() {
