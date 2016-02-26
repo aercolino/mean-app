@@ -39,7 +39,6 @@
                 $rootScope.appTime = new Date();
                 CheckLogin();
 
-                $rootScope.$on('$locationChangeStart', function(event, next, current) {
                     var restricted = MyProject.RouteIsRestricted($location);
                     var loggedIn = !!$rootScope.globals.currentUser;
                     if (restricted && !loggedIn) {
@@ -48,7 +47,6 @@
                     $rootScope.dataLoading = true;
                 });
 
-                $rootScope.$on('$locationChangeSuccess', function(event, next, current) {
                     $rootScope.dataLoading = false;
                 });
 
