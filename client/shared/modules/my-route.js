@@ -32,7 +32,9 @@
             function redirectTo(appRoot) {
                 return {
                     redirectTo: function(params, path, search) {
-                        window.location.href = appRoot + '/#' + path;
+                        var new_path = appRoot + '/#' + path;
+                        window.location.href = new_path;
+                        //window.location.replace(new_path);
                         return; // do not return a string !
                     }
                 };
@@ -73,10 +75,12 @@
                 } else {
                     // expecting a filepath relative to /apps/<app>/components
                     if (result.filepath.search('/') > 0) {
-                        // explicit filepath (always without extension), like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
+                        // explicit filepath (always without extension)
+                        // like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
                         // use the filepath as is
                     } else {
-                        // implicit filepath (always without extension), like: 'login'                 --> '/apps/auth/components/login/login'
+                        // implicit filepath (always without extension)
+                        // like: 'login'                 --> '/apps/auth/components/login/login'
                         // double the filepath
                         result.filepath += '/' + result.filepath;
                     }
@@ -99,10 +103,10 @@
                     result.resolve = _.extend(result.resolve || {}, {
                         load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
                             if (appName && MyProject.AppName() === appName) {
-                                // we are going to a route inside the SPA we are into
+                                // we are going to a route inside the same SPA we are into
                                 return resolveDependencies($q, $rootScope, dependencies);
                             } else {
-                                // this should not happen...
+                                // this should not happen because we took care of it earlier
                             }
                         }]
                     });
