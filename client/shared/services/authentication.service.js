@@ -4,8 +4,8 @@
     MyProject.CodeSetup({
         type: 'factory',
         name: 'authenticationService',
-        dependencies: ['$http', '$rootScope'],
-        services: ['storageService'],
+        dependencies: ['$http', '$rootScope', '$location'],
+        services: ['storageService', 'flashService'],
         code: main
     });
 
@@ -16,7 +16,8 @@
             check: check,
             setCredentials: setCredentials,
             clearCredentials: clearCredentials,
-            resetPassword: resetPassword
+            resetPassword: resetPassword,
+            ValidateAccess: ValidateAccess
         };
 
         return self;
@@ -93,6 +94,49 @@
                         error: messageFor(failure)
                     });
                 });
+        }
+
+        function ValidateAccess() {
+            ValidateUser();
+            ProtectAccess();
+
+            return;
+
+
+            function ValidateUser() {
+                my.$rootScope.globals = my.storageService.getItem('globals') || {};
+                var loggedIn = !! my.$rootScope.globals.currentUser;
+                if (loggedIn) {
+                    ContinueOrLogout(my.$rootScope.globals.currentUser.authdata);
+                }
+            }
+
+            function ContinueOrLogout(token) {
+                check(token, function(response) {
+                    var message = '';
+                    if (response.success) {
+                        my.$http.defaults.headers.common['x-access-token'] = token;
+                        message = my.$location.path() !== '/login' ? 'Welcome back' : 'See you soon';
+                        message += ', ' + response.payload + '.';
+                        my.flashService.success(message);
+                        return;
+                    }
+                    my.$location.path('/login');
+                    message = response.error ? response.error : JSON.stringify(response);
+                    my.flashService.error(message, true);
+                });
+            }
+
+            function ProtectAccess() {
+                my.$rootScope.$on('$locationChangeStart', function(event) {
+                    var restricted = MyProject.RouteIsRestricted(my.$location.path());
+                    var loggedIn = !! my.$rootScope.globals.currentUser;
+                    if (restricted && !loggedIn) {
+                        event.preventDefault();
+                        my.$location.path('/login');
+                    }
+                });
+            }
         }
     }
 

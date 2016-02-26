@@ -91,6 +91,7 @@
                 var file = match(result.filepath, formatPathToFile, ['', '', 'file']).file;
                 result = _.extend(
                     {
+                        title: _.startCase(file),
                         templateUrl: result.filepath + '.html',
                         controller: _.camelCase(file) + 'Controller',
                         controllerUrl: result.filepath + '.js'
@@ -101,7 +102,7 @@
                 var dependencies = result.controller ? [result.controllerUrl] : [];
                 if (dependencies.length) {
                     result.resolve = _.extend(result.resolve || {}, {
-                        load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
+                        '-load': ['$q', '$rootScope', '$route', function($q, $rootScope) {
                             if (appName && MyProject.AppName() === appName) {
                                 // we are going to a route inside the same SPA we are into
                                 return resolveDependencies($q, $rootScope, dependencies);
@@ -111,6 +112,7 @@
                         }]
                     });
                 }
+                
                 return result;
             }
 
