@@ -32,7 +32,8 @@ define([
             .when('/',                      route.forComponent({
                                                 app: 'core',
                                                 filepath: 'home',
-                                                controller: ''
+                                                controller: '',
+                                                title: ''
                                             }))
 
             // Case 2: This works like Case 1, but it requires a controller at /apps/core/components/home/home.js.

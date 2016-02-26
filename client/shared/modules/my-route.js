@@ -91,6 +91,7 @@
                 var file = match(result.filepath, formatPathToFile, ['', '', 'file']).file;
                 result = _.extend(
                     {
+                        title: _.startCase(file),
                         templateUrl: result.filepath + '.html',
                         controller: _.camelCase(file) + 'Controller',
                         controllerUrl: result.filepath + '.js'
@@ -111,6 +112,14 @@
                         }]
                     });
                 }
+
+                result.resolve = _.extend(result.resolve || {}, {
+                    '-pageTitle': ['$rootScope', '$route', function($rootScope, $route) {
+                        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+                            $rootScope.pageTitle = current.title || _.startCase(current.app);
+                        });
+                    }]
+                });
                 return result;
             }
 
