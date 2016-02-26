@@ -62,8 +62,7 @@ define([
             .otherwise({
                 redirectTo: function(params, path, search) {
                     console.log('otherwise...');
-                    window.location.href = '/apps/core/#/';
-                    return; // do not return a string !
+                    return '/';
                 }
             });
         /* beautify preserve:end */
