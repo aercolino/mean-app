@@ -101,7 +101,7 @@
                 var dependencies = result.controller ? [result.controllerUrl] : [];
                 if (dependencies.length) {
                     result.resolve = _.extend(result.resolve || {}, {
-                        load: ['$q', '$rootScope', '$route', function($q, $rootScope, $route) {
+                        '-load': ['$q', '$rootScope', '$route', function($q, $rootScope) {
                             if (appName && MyProject.AppName() === appName) {
                                 // we are going to a route inside the same SPA we are into
                                 return resolveDependencies($q, $rootScope, dependencies);
