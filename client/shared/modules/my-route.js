@@ -32,9 +32,10 @@
             function redirectTo(appRoot) {
                 return {
                     redirectTo: function(params, path, search) {
+                        // Replace instead of assign, because we get here only when crossing an SPA border.
+                        // In such a case, the current URL is "wrong". Examples: "/auth/#/", "/core/#/login"...
                         var new_path = appRoot + '/#' + path;
-                        window.location.href = new_path;
-                        //window.location.replace(new_path);
+                        window.location.replace(new_path);
                         return; // do not return a string !
                     }
                 };
