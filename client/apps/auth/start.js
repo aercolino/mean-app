@@ -33,52 +33,20 @@
                 .module(MyProject.AppName())
                 .run(run);
 
-            run.$inject = ['$rootScope', '$location', '$http', 'storageService', 'authenticationService', 'flashService'];
+            run.$inject = ['$rootScope', 'authenticationService'];
 
-            function run($rootScope, $location, $http, storageService, authenticationService, flashService) {
+            function run($rootScope, authenticationService) {
                 $rootScope.appTime = new Date();
-                CheckLogin();
+                authenticationService.ValidateAccess();
+                MyProject.SetTitle($rootScope);
 
-                    var restricted = MyProject.RouteIsRestricted($location);
-                    var loggedIn = !!$rootScope.globals.currentUser;
-                    if (restricted && !loggedIn) {
-                        $location.path('/login');
-                    }
+                $rootScope.$on('$locationChangeStart', function() {
                     $rootScope.dataLoading = true;
-                    console.log('auth $locationChangeStart');
                 });
 
                 $rootScope.$on('$locationChangeSuccess', function() {
                     $rootScope.dataLoading = false;
-                    console.log('auth $locationChangeSuccess');
                 });
-
-                return;
-
-
-                function CheckLogin() {
-                    $rootScope.globals = storageService.getItem('globals') || {};
-                    var loggedIn = !!$rootScope.globals.currentUser;
-                    if (loggedIn) {
-                        ContinueOrLogout($rootScope.globals.currentUser.authdata);
-                    }
-                }
-
-                function ContinueOrLogout(token) {
-                    authenticationService.check(token, function(response) {
-                        var message = '';
-                        if (response.success) {
-                            $http.defaults.headers.common['x-access-token'] = token;
-                            message = $location.path() !== '/login' ? 'Welcome back' : 'See you soon';
-                            message += ', ' + response.payload + '.';
-                            flashService.success(message);
-                            return;
-                        }
-                        $location.path('/login');
-                        message = response.error ? response.error : JSON.stringify(response);
-                        flashService.error(message, true);
-                    });
-                }
             }
 
             angular.bootstrap(document, [MyProject.AppName()]);

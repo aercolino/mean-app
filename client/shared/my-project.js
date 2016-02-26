@@ -10,6 +10,7 @@
         Config: Config,
         Service: Service,
         CurrentUser: CurrentUser,
+        SetTitle: SetTitle,
         UniqueUrl: UniqueUrl,
         RegisterSetup: RegisterSetup,
         CodeSetup: CodeSetup
@@ -26,8 +27,8 @@
         return anonymousRoutes;
     }
 
-    function RouteIsRestricted($location) {
-        var result = _.indexOf(anonymousRoutes, $location.path()) < 0;
+    function RouteIsRestricted(path) {
+        var result = _.indexOf(anonymousRoutes, path) < 0;
         return result;
     }
 
@@ -92,6 +93,15 @@
         } catch (e) {
             return {};
         }
+    }
+
+    function SetTitle($rootScope) {
+        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+            // console.log(appName + ' $routeChangeSuccess' 
+            //     + (' previous:' + (previous ? previous.title : '(reload)')) 
+            //     + (' current:' + (current ? current.title : '(?)')));
+            window.document.title = current.title || _.startCase(current.app);
+        });
     }
 
     function UniqueUrl(path, unique) {
