@@ -112,18 +112,7 @@
                         }]
                     });
                 }
-
-                result.resolve = _.extend(result.resolve || {}, {
-                    '-pageTitle': ['$rootScope', '$route', function($rootScope, $route) {
-                        $rootScope.$on('$routeChangeStart', function (event, next, current) {
-                            console.log(appName + ' $routeChangeStart');
-                        });
-                        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-                            console.log(appName + ' $routeChangeSuccess');
-                            $rootScope.pageTitle = current.title || _.startCase(current.app);
-                        });
-                    }]
-                });
+                
                 return result;
             }
 
