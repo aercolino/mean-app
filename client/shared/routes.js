@@ -22,11 +22,8 @@ define([
         $routeProvider
 
             .when('/login',                 route.forComponent('auth: login as vm'))
-
             .when('/register',              route.forComponent('auth: register as vm'))
-
             .when('/reset-password',        route.forComponent('auth: reset-password as vm'))
-
 
             // Case 1: This works because AngularJS allows a view without a controller (but it does not allow a route without a view).
             .when('/',                      route.forComponent({
@@ -45,13 +42,6 @@ define([
             //                                     filepath: 'home',
             //                                     controller: 'myEmptyController',
             //                                     controllerUrl: '/shared/modules/my-empty-controller.js'
-            //                                 }))
-
-            // This does not work because AngularJS tries to infinitely load /apps/core/index.html into the ng-view of the previous /apps/core/index.html.
-            // .when('/',                      route.forComponent({
-            //                                     app: 'core',
-            //                                     filepath: '/index',
-            //                                     controller: ''
             //                                 }))
 
             // .when('/path-to/some-stuff',      route.forComponent('core: some-dir/something'))
