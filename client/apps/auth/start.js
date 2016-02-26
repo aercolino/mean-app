@@ -45,9 +45,12 @@
                         $location.path('/login');
                     }
                     $rootScope.dataLoading = true;
+                    console.log('auth $locationChangeStart');
                 });
 
+                $rootScope.$on('$locationChangeSuccess', function() {
                     $rootScope.dataLoading = false;
+                    console.log('auth $locationChangeSuccess');
                 });
 
                 return;
