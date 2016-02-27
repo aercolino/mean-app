@@ -17,9 +17,14 @@
             return this;
         };
 
-        this.route = function() {
+        this.route = (function() {  // stick to AngularJS name convention to blend seamlessly
 
-            function match(source, regexp, names) {
+            return {
+                forComponent: ForComponent  // stick to AngularJS name convention to blend seamlessly 
+            };
+
+
+            function NamedMatch(source, regexp, names) {
                 var result = {};
                 var matches = source.match(regexp);
                 for (var i = 0, iTop = names.length; i < iTop; i++) {
@@ -29,7 +34,19 @@
                 return result;
             }
 
-            function redirectTo(appRoot) {
+            function InitRoute(options) {
+                var result = {};
+                if (_.isPlainObject(options)) {
+                    result = options;
+                } else {
+                    var simplified = options.replace(/^\s+|\s+$/, '').replace(/\s+/, ' ').replace(/ ?: ?/, ':');
+                    var formatAppPathAlias = /(?:([\w-]+):)?([\/\w-]+)(?: as ([\w-]+))?/i;
+                    result = NamedMatch(simplified, formatAppPathAlias, ['', 'app', 'filepath', 'controllerAs']);
+                }
+                return result;
+            }
+
+            function RedirectTo(appRoot) {
                 return {
                     redirectTo: function(params, path, search) {
                         // Replace instead of assign, because we get here only when crossing an SPA border.
@@ -41,52 +58,28 @@
                 };
             }
 
-            function resolveDependencies($q, $rootScope, dependencies) {
-                var defer = $q.defer();
-                require(dependencies, function() {
-                    defer.resolve();
-                    $rootScope.$apply();
-                });
-                return defer.promise;
-            }
-
-            function InitRoute(options) {
-                var result = {};
-                if (_.isPlainObject(options)) {
-                    result = options;
-                } else {
-                    var simplified = options.replace(/^\s+|\s+$/, '').replace(/\s+/, ' ').replace(/ ?: ?/, ':');
-                    var formatAppPathAlias = /(?:([\w-]+):)?([\/\w-]+)(?: as ([\w-]+))?/i;
-                    result = match(simplified, formatAppPathAlias, ['', 'app', 'filepath', 'controllerAs']);
-                }
-                return result;
-            }
-
-            function ToAbsPath(appName, filepath) {
+            function RealPath(filepath) {
                 var result = filepath;
                 if (filepath[0] == '/') {
-                    // expecting a filepath relative to /apps/<app>
-                    result = '/apps/' + appName + result;
+                    // expecting a filepath relative to '<appRoot>'
                 } else {
-                    // expecting a filepath relative to /apps/<app>/components
+                    // expecting a filepath relative to '<appRoot>/components'
                     if (filepath.search('/') > 0) {
                         // explicit filepath (always without extension)
-                        // like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
-                        // use the filepath as is
+                        // like: 'some-folder/some-file' --> '<appRoot>/components/some-folder/some-file'
                     } else {
                         // implicit filepath (always without extension)
-                        // like: 'login'                 --> '/apps/auth/components/login/login'
-                        // double the filepath
+                        // like: 'some-file'             --> '<appRoot>/components/some-file/some-file'
                         result += '/' + filepath;
                     }
-                    result = '/apps/' + appName + '/components/' + result;
+                    result = '/components/' + result;
                 }
                 return result;
             }
 
             function DefaultRoute(filepath) {
                 var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
-                var file = match(filepath, formatPathToFile, ['', '', 'file']).file;
+                var file = NamedMatch(filepath, formatPathToFile, ['', '', 'file']).file;
                 var result = {
                     title: _.startCase(file),
                     templateUrl: filepath + '.html',
@@ -96,43 +89,49 @@
                 return result;
             }
 
+            function RequireDependencies($q, $rootScope, dependencies) {
+                var defer = $q.defer();
+                require(dependencies, function() {
+                    defer.resolve();
+                    $rootScope.$apply();
+                });
+                return defer.promise;
+            }
+
             function LoadController(route) {
-                var result = route;
+                var result = {};
                 var dependencies = route.controller ? [route.controllerUrl] : [];
                 if (dependencies.length) {
-                    result.resolve = _.extend(result.resolve || {}, {
-                        '-load': ['$q', '$rootScope', function($q, $rootScope) {
-                            // we are going to a route inside the same SPA we are into
-                            // because we took care earlier about crossing SPA border
-                            return resolveDependencies($q, $rootScope, dependencies);                            
-                        }]
-                    });
+                    var promiseName = 'load ' + route.controller;
+                    var promiseMap = {};
+                    promiseMap[promiseName] = ['$q', '$rootScope', function ($q, $rootScope) {
+                        // we are going to a route inside the same SPA we are into
+                        // because we took care earlier about crossing the SPA border
+                        return RequireDependencies($q, $rootScope, dependencies);
+                    }];
+                    result.resolve = _.extend(route.resolve || {}, promiseMap);
                 }
                 return result;
             }
 
-            function forComponent(options) {
+            function ForComponent(options) {
                 var result = InitRoute(options);
                 if (!result.filepath) {
                     throw 'Expected a filepath for the component.';
                 }
 
                 var appName = result.app;
+                var appRoot = '/apps/' + appName;
                 if (appName && MyProject.AppName() !== appName) {
-                    return redirectTo('/apps/' + appName);
+                    return RedirectTo(appRoot);
                 }
 
-                result.filepath = ToAbsPath(appName, result.filepath);
+                result.filepath = appRoot + RealPath(result.filepath);
                 result = _.extend(DefaultRoute(result.filepath), result);
-
-                result = LoadController(result);
+                result = _.extend(result, LoadController(result));
                 return result;
             }
-
-            return {
-                forComponent: forComponent
-            };
-        }();
+        })();
 
     }
 
