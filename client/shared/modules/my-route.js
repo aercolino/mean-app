@@ -50,8 +50,7 @@
                 return defer.promise;
             }
 
-            function forComponent(options) {
-                var matches = [];
+            function InitRoute(options) {
                 var result = {};
                 if (_.isPlainObject(options)) {
                     result = options;
@@ -60,7 +59,60 @@
                     var formatAppPathAlias = /(?:([\w-]+):)?([\/\w-]+)(?: as ([\w-]+))?/i;
                     result = match(simplified, formatAppPathAlias, ['', 'app', 'filepath', 'controllerAs']);
                 }
+                return result;
+            }
 
+            function ToAbsPath(appName, filepath) {
+                var result = filepath;
+                if (filepath[0] == '/') {
+                    // expecting a filepath relative to /apps/<app>
+                    result = '/apps/' + appName + result;
+                } else {
+                    // expecting a filepath relative to /apps/<app>/components
+                    if (filepath.search('/') > 0) {
+                        // explicit filepath (always without extension)
+                        // like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
+                        // use the filepath as is
+                    } else {
+                        // implicit filepath (always without extension)
+                        // like: 'login'                 --> '/apps/auth/components/login/login'
+                        // double the filepath
+                        result += '/' + filepath;
+                    }
+                    result = '/apps/' + appName + '/components/' + result;
+                }
+                return result;
+            }
+
+            function DefaultRoute(filepath) {
+                var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
+                var file = match(filepath, formatPathToFile, ['', '', 'file']).file;
+                var result = {
+                    title: _.startCase(file),
+                    templateUrl: filepath + '.html',
+                    controller: _.camelCase(file) + 'Controller',
+                    controllerUrl: filepath + '.js'
+                };
+                return result;
+            }
+
+            function LoadController(route) {
+                var result = route;
+                var dependencies = route.controller ? [route.controllerUrl] : [];
+                if (dependencies.length) {
+                    result.resolve = _.extend(result.resolve || {}, {
+                        '-load': ['$q', '$rootScope', function($q, $rootScope) {
+                            // we are going to a route inside the same SPA we are into
+                            // because we took care earlier about crossing SPA border
+                            return resolveDependencies($q, $rootScope, dependencies);                            
+                        }]
+                    });
+                }
+                return result;
+            }
+
+            function forComponent(options) {
+                var result = InitRoute(options);
                 if (!result.filepath) {
                     throw 'Expected a filepath for the component.';
                 }
@@ -70,50 +122,10 @@
                     return redirectTo('/apps/' + appName);
                 }
 
-                if (result.filepath[0] == '/') {
-                    // expecting a filepath relative to /apps/<app>
-                    result.filepath = '/apps/' + appName + result.filepath;
-                } else {
-                    // expecting a filepath relative to /apps/<app>/components
-                    if (result.filepath.search('/') > 0) {
-                        // explicit filepath (always without extension)
-                        // like: 'plans-simulator/twist' --> '/apps/core/components/plans-simulator/twist'
-                        // use the filepath as is
-                    } else {
-                        // implicit filepath (always without extension)
-                        // like: 'login'                 --> '/apps/auth/components/login/login'
-                        // double the filepath
-                        result.filepath += '/' + result.filepath;
-                    }
-                    result.filepath = '/apps/' + appName + '/components/' + result.filepath;
-                }
-                
-                var formatPathToFile = /^((?:\/[\w-]+)*)\/([\w-]+)$/;
-                var file = match(result.filepath, formatPathToFile, ['', '', 'file']).file;
-                result = _.extend(
-                    {
-                        title: _.startCase(file),
-                        templateUrl: result.filepath + '.html',
-                        controller: _.camelCase(file) + 'Controller',
-                        controllerUrl: result.filepath + '.js'
-                    },
-                    result
-                );
+                result.filepath = ToAbsPath(appName, result.filepath);
+                result = _.extend(DefaultRoute(result.filepath), result);
 
-                var dependencies = result.controller ? [result.controllerUrl] : [];
-                if (dependencies.length) {
-                    result.resolve = _.extend(result.resolve || {}, {
-                        '-load': ['$q', '$rootScope', '$route', function($q, $rootScope) {
-                            if (appName && MyProject.AppName() === appName) {
-                                // we are going to a route inside the same SPA we are into
-                                return resolveDependencies($q, $rootScope, dependencies);
-                            } else {
-                                // this should not happen because we took care of it earlier
-                            }
-                        }]
-                    });
-                }
-                
+                result = LoadController(result);
                 return result;
             }
 
